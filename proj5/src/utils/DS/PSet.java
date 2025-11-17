@@ -1,20 +1,13 @@
 package utils.DS;
 
-import java.util.HashSet;
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.Random;
 
-public class PSet extends HashSet<Point> {
+public class PSet extends ArrayList<Point> {
     public Point choose(Random random) {
-        int rIndex = random.nextInt(0, size() - 1);
-        Iterator<Point> iterator = iterator();
-
-        while(rIndex > 0) {
-            iterator.next();
-            rIndex--;
-        }
-
-        return iterator.next();
+        return get(
+                random.nextInt(0, size() - 1)
+        );
     }
 
     public PSet filterM(Point point, int radius, boolean in) {

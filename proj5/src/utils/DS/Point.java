@@ -25,4 +25,13 @@ public class Point {
     public int hashCode() {
         return 31 * x + y;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o instanceof Point uddaPoint) {
+            return (uddaPoint.x == x) && (uddaPoint.y == y);
+        }
+
+        return false;
+    }
 }
