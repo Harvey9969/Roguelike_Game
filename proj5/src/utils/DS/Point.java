@@ -5,6 +5,10 @@ public class Point {
     public int y;
 
     public Point(int x, int y) {
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException("Negative points aren't allowed");
+        }
+
         this.x = x;
         this.y = y;
     }

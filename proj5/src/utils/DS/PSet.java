@@ -18,6 +18,10 @@ public class PSet extends HashSet<Point> {
     }
 
     public PSet filterM(Point point, int radius, boolean in) {
+        if (radius < 0) {
+            throw new IllegalArgumentException("Negative radius not allowed");
+        }
+
         PSet filtered = new PSet();
 
         for (Point PSetPoints : this) {
