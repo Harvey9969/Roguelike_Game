@@ -20,7 +20,7 @@ public class test {
 
         // initialize tiles
         TETile[][] world = new TETile[WIDTH][HEIGHT];
-        String prefix = "proj5/src/assets/rem small pix";  // change this file path
+        String prefix = "proj5/src/assets/ES small pix";  // change this file path
         //"C:\Users\thest\Downloads\rem small pix\tile_10_20.png"
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
