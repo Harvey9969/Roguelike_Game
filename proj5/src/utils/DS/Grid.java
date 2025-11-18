@@ -3,6 +3,8 @@ package utils.DS;
 import tileengine.TETile;
 import tileengine.Tileset;
 
+import java.util.*;
+
 public class Grid {
     int width;
     int height;
@@ -114,12 +116,100 @@ public class Grid {
         return result;
     }
 
-//    public Path astar(Point start, Point end) {
-//        validateInBounds(start.x, start.y);
-//        validateInBounds(end.x, end.y);
-//
-//
-//    }
+    public List<Point> astar(Point start, Point end) {
+        validateInBounds(start.x, start.y);
+        validateInBounds(end.x, end.y);
+
+        record PQNode(double dist, Point loc) {}
+        PriorityQueue<PQNode> fringe = new PriorityQueue<>(new Comparator<PQNode>() {
+            @Override
+            public int compare(PQNode o1, PQNode o2) {
+                return Double.compare(o1.dist, o2.dist);
+            }
+        });
+
+        HashMap<Point, Integer> distTo = new HashMap<>();
+        HashMap<Point, Point> edgeTo = new HashMap<>();
+        HashSet<Point> visited = new HashSet<>();
+
+        fringe.add(new PQNode(0, start));
+        distTo.put(start, 0);
+        edgeTo.put(start, null);
+
+        PQNode node;
+        boolean pathFound = false;
+
+        while (!fringe.isEmpty()) {
+            node = fringe.poll();
+            visited.add(node.loc);
+
+            if (node.loc.equals(end)) {
+                pathFound = true;
+                break;
+            }
+
+            List<Point> neighbors = new ArrayList<>();
+
+            if (node.loc.x - 1 >= 0) {
+                neighbors.add(new Point(node.loc.x - 1, node.loc.y));
+            }
+
+            if (node.loc.x + 1 < width) {
+                neighbors.add(new Point(node.loc.x + 1, node.loc.y));
+            }
+
+            if (node.loc.y - 1 >= 0) {
+                neighbors.add(new Point(node.loc.x, node.loc.y - 1));
+            }
+
+            if (node.loc.y + 1 < height) {
+                neighbors.add(new Point(node.loc.x, node.loc.y + 1));
+            }
+
+            for (Point point: neighbors) {
+                if (
+                        visited.contains(point)
+                        || !get(point.x, point.y).equals(Tileset.NOTHING)
+                ) {
+                    continue;
+                }
+
+                if (!distTo.containsKey(point)) {
+                    distTo.put(point, distTo.get(node.loc) + 1);
+                    edgeTo.put(point, node.loc);
+
+                    fringe.add(new PQNode(
+                            distTo.get(point) + point.eDist(end),
+                            point
+                    ));
+                } else if (distTo.get(point) > distTo.get(node.loc) + 1) {
+                    distTo.put(point, distTo.get(node.loc) + 1);
+                    edgeTo.put(point, node.loc);
+
+                    Point finalPoint = point;
+                    fringe.removeIf(pqNode -> pqNode.loc.equals(finalPoint));
+                    fringe.add(new PQNode(
+                            distTo.get(point) + point.eDist(end),
+                            point
+                    ));
+                }
+                }
+
+        }
+
+        if (!pathFound) {
+            throw new RuntimeException("Path could not be found");
+        }
+
+        Point visitor = end;
+        LinkedList<Point> path = new LinkedList<>();
+        while (visitor != null) {
+            path.addFirst(visitor);
+            visitor = edgeTo.get(visitor);
+        }
+
+        return path;
+    }
 
     private static void validateDimension(int width, int height) {
         if (width <= 0 || height <= 0) {
