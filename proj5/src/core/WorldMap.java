@@ -66,7 +66,7 @@ public class WorldMap {
                             grid.astar(r1C, r2C),
                             r2
                     ),
-                    false
+                    true
             );
         }
     }
