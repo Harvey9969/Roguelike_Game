@@ -3,9 +3,7 @@ package core;
 import tileengine.Tileset;
 import utils.DS.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class WorldMap {
     public RoomGraph graph;
@@ -48,20 +46,27 @@ public class WorldMap {
                 }
             }
 
+            for (Point point: moveCombos(r1C, 2)) {
+                r1.wallTiles.remove(point);
+            }
+
             for (Point point: List.of(r2C, r2C.left(), r2C.right(), r2C.down(), r2C.up())) {
                 if (r2.wallTiles.remove(point)) {
                     grid.set(new Tile(point, Tileset.NOTHING));
                 }
             }
 
-            // TODO: If this fails retry with new portal
+            for (Point point: moveCombos(r2C, 2)) {
+                r2.wallTiles.remove(point);
+            }
+
             grid.add(
                     new Path(
                             r1,
                             grid.astar(r1C, r2C),
                             r2
                     ),
-                    true
+                    false
             );
         }
     }
@@ -152,5 +157,29 @@ public class WorldMap {
                 edges.add(new Edge(rooms.get(i), rooms.get(edgeTo[i])));
             }
         }
+    }
+
+    private List<Point> moveCombos(Point p, int depth) {
+        record movePoint(int moves, Point loc) {}
+
+        Deque<movePoint> deque = new ArrayDeque<>();
+        deque.addLast(new movePoint(0, p));
+
+        List<Point> result = new ArrayList<>();
+
+        while (!deque.isEmpty()) {
+            movePoint elem = deque.removeFirst();
+
+            if (elem.moves == depth) {
+                result.add(elem.loc);
+            } else {
+                deque.addLast(new movePoint(elem.moves + 1, elem.loc.left()));
+                deque.addLast(new movePoint(elem.moves + 1, elem.loc.right()));
+                deque.addLast(new movePoint(elem.moves + 1, elem.loc.up()));
+                deque.addLast(new movePoint(elem.moves + 1, elem.loc.down()));
+            }
+        }
+
+        return result;
     }
 }

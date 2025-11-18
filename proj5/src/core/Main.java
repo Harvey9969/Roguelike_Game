@@ -11,7 +11,7 @@ public class Main {
         TERenderer ter = new TERenderer();
         ter.initialize(WIDTH, HEIGHT);
 
-        WorldMap map = new WorldMap(123456789, WIDTH, HEIGHT);
+        WorldMap map = new WorldMap(5292285121047549716L, WIDTH, HEIGHT);
 
         // draws the world to the screen
         ter.renderFrame(map.grid.view());
