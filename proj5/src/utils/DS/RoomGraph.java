@@ -3,8 +3,8 @@ package utils.DS;
 import java.util.*;
 
 public class RoomGraph {
-    private Map<Room, Integer> roomToInd;
-    private Set<Integer>[] adjacencyList;
+    private final Map<Room, Integer> roomToInd;
+    private final Set<Integer>[] adjacencyList;
 
     public RoomGraph(Iterable<Room> rooms) {
         int ind = 0;
