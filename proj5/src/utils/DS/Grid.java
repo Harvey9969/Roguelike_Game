@@ -17,6 +17,12 @@ public class Grid {
         this.height = height;
 
         tiles = new TETile[width][height];
+
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                tiles[x][y] = Tileset.NOTHING;
+            }
+        }
     }
 
     public Grid(Grid parent, Point bottomLeft, int width, int height) {
@@ -58,10 +64,7 @@ public class Grid {
         for (Tile tile: uddaTiles) {
             TETile nativeTile = get(tile.point().x, tile.point().y);
 
-            if (
-                    nativeTile == null
-                    || nativeTile.equals(Tileset.NOTHING)
-            ) {
+            if (nativeTile.equals(Tileset.NOTHING)) {
                 set(tile);
             } else {
                 throw new IllegalStateException("Obscuring tile exists");
@@ -110,6 +113,13 @@ public class Grid {
 
         return result;
     }
+
+//    public Path astar(Point start, Point end) {
+//        validateInBounds(start.x, start.y);
+//        validateInBounds(end.x, end.y);
+//
+//
+//    }
 
     private static void validateDimension(int width, int height) {
         if (width <= 0 || height <= 0) {

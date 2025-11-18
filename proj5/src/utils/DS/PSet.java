@@ -6,7 +6,7 @@ import java.util.Random;
 public class PSet extends ArrayList<Point> {
     public Point choose(Random random) {
         return get(
-                random.nextInt(0, size() - 1)
+                random.nextInt(0, size())
         );
     }
 
