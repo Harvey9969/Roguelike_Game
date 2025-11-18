@@ -10,8 +10,8 @@ import java.awt.*;
  */
 public class test {
 
-    private static final int WIDTH = 20;
-    private static final int HEIGHT = 56;
+    private static final int WIDTH = 18;
+    private static final int HEIGHT = 54;
 
     public static void main(String[] args) {
         // initialize the tile rendering engine with a window of size WIDTH x HEIGHT
@@ -20,7 +20,7 @@ public class test {
 
         // initialize tiles
         TETile[][] world = new TETile[WIDTH][HEIGHT];
-        String prefix = "proj5/src/assets/ES small pix";  // change this file path
+        String prefix = "proj5/src/assets/rem_small_pix";  // change this file path
         //"C:\Users\thest\Downloads\rem small pix\tile_10_20.png"
         for (int x = 0; x < WIDTH; x++) {
             for (int y = 0; y < HEIGHT; y++) {
