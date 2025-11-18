@@ -55,6 +55,10 @@ public class Grid {
         return tiles[x + xOffset][y + yOffset];
     }
 
+    public TETile get(Point p) {
+        return get(p.x, p.y);
+    }
+
     public void add(TSet uddaTiles, boolean noOverwrite) {
         if (!noOverwrite) {
             for (Tile tile: uddaTiles) {
@@ -69,7 +73,12 @@ public class Grid {
             if (nativeTile.equals(Tileset.NOTHING)) {
                 set(tile);
             } else {
-                throw new IllegalStateException("Obscuring tile exists");
+                throw new IllegalStateException(String.format(
+                        "Cannot place %s at (%s) obstructed by %s",
+                        tile.tileType(),
+                        tile.point(),
+                        nativeTile
+                ));
             }
         }
     }
@@ -120,7 +129,12 @@ public class Grid {
         validateInBounds(start.x, start.y);
         validateInBounds(end.x, end.y);
 
+        if (start == end) {
+            throw new IllegalArgumentException("Start cannot equal end");
+        }
+
         record PQNode(double dist, Point loc) {}
+        record adjNode(char dir, Point loc) {}
         PriorityQueue<PQNode> fringe = new PriorityQueue<>(new Comparator<PQNode>() {
             @Override
             public int compare(PQNode o1, PQNode o2) {
@@ -130,11 +144,13 @@ public class Grid {
 
         HashMap<Point, Integer> distTo = new HashMap<>();
         HashMap<Point, Point> edgeTo = new HashMap<>();
+        HashMap<Point, Character> directionTo = new HashMap<>();
         HashSet<Point> visited = new HashSet<>();
 
         fringe.add(new PQNode(0, start));
         distTo.put(start, 0);
         edgeTo.put(start, null);
+        directionTo.put(start, ' ');
 
         PQNode node;
         boolean pathFound = false;
@@ -148,43 +164,53 @@ public class Grid {
                 break;
             }
 
-            List<Point> neighbors = new ArrayList<>();
+            List<adjNode> neighbors = new ArrayList<>();
 
             if (node.loc.x - 1 >= 0) {
-                neighbors.add(new Point(node.loc.x - 1, node.loc.y));
+                neighbors.add(new adjNode('W', node.loc.left()));
             }
 
             if (node.loc.x + 1 < width) {
-                neighbors.add(new Point(node.loc.x + 1, node.loc.y));
+                neighbors.add(new adjNode('E', node.loc.right()));
             }
 
             if (node.loc.y - 1 >= 0) {
-                neighbors.add(new Point(node.loc.x, node.loc.y - 1));
+                neighbors.add(new adjNode('S', node.loc.down()));
             }
 
             if (node.loc.y + 1 < height) {
-                neighbors.add(new Point(node.loc.x, node.loc.y + 1));
+                neighbors.add(new adjNode('N', node.loc.up()));
             }
 
-            for (Point point: neighbors) {
+            for (adjNode adj: neighbors) {
+                Point point = adj.loc;
+                char dir = adj.dir;
+                int cost = 2;
+
+                if (dir == directionTo.get(node.loc)) {
+                    cost = 1;
+                }
+
                 if (
                         visited.contains(point)
-                        || !get(point.x, point.y).equals(Tileset.NOTHING)
+                        || !get(point).equals(Tileset.NOTHING)
                 ) {
                     continue;
                 }
 
                 if (!distTo.containsKey(point)) {
-                    distTo.put(point, distTo.get(node.loc) + 1);
+                    distTo.put(point, distTo.get(node.loc) + cost);
                     edgeTo.put(point, node.loc);
+                    directionTo.put(point, dir);
 
                     fringe.add(new PQNode(
                             distTo.get(point) + point.eDist(end),
                             point
                     ));
-                } else if (distTo.get(point) > distTo.get(node.loc) + 1) {
-                    distTo.put(point, distTo.get(node.loc) + 1);
+                } else if (distTo.get(point) > distTo.get(node.loc) + cost) {
+                    distTo.put(point, distTo.get(node.loc) + cost);
                     edgeTo.put(point, node.loc);
+                    directionTo.put(point, dir);
 
                     Point finalPoint = point;
                     fringe.removeIf(pqNode -> pqNode.loc.equals(finalPoint));

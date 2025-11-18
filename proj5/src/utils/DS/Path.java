@@ -18,7 +18,9 @@ public class Path extends TSet {
                         !start.floorTiles.contains(adjPoint)
                         && !start.wallTiles.contains(adjPoint)
                         && !stop.floorTiles.contains(adjPoint)
+                        && !stop.wallTiles.contains(adjPoint)
                         && !path.contains(adjPoint)
+                        && !wallTiles.contains(adjPoint)
                 ) {
                     wallTiles.add(adjPoint);
                 }

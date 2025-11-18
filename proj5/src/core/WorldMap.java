@@ -1,19 +1,20 @@
 package core;
 
+import tileengine.Tileset;
 import utils.DS.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Map {
+public class WorldMap {
     public RoomGraph graph;
     public Grid grid;
 
     public int width;
     public int height;
 
-    public Map(long seed, int width, int height) {
+    public WorldMap(long seed, int width, int height) {
         Random random = new Random(seed);
         grid = new Grid(width, height);
 
@@ -22,7 +23,6 @@ public class Map {
 
         List<Room> rooms = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
-        List<Path> paths = new ArrayList<>();
 
         poissonRoomPlacement(rooms, 6, 10, 3, random);
         euclideanMST(rooms, edges);
@@ -30,6 +30,39 @@ public class Map {
 
         for (Room room: rooms) {
             grid.add(room, true);
+        }
+
+        for (Edge edge: edges) {
+            Room r1 = edge.r1();
+            Room r2 = edge.r2();
+
+            graph.connect(r1, r2);
+
+            Point[] closest = r1.wallTiles.closestE(r2.wallTiles);
+            Point r1C = closest[0];
+            Point r2C = closest[1];
+
+            for (Point point: List.of(r1C, r1C.left(), r1C.right(), r1C.down(), r1C.up())) {
+                if (r1.wallTiles.remove(point)) {
+                    grid.set(new Tile(point, Tileset.NOTHING));
+                }
+            }
+
+            for (Point point: List.of(r2C, r2C.left(), r2C.right(), r2C.down(), r2C.up())) {
+                if (r2.wallTiles.remove(point)) {
+                    grid.set(new Tile(point, Tileset.NOTHING));
+                }
+            }
+
+            // TODO: If this fails retry with new portal
+            grid.add(
+                    new Path(
+                            r1,
+                            grid.astar(r1C, r2C),
+                            r2
+                    ),
+                    true
+            );
         }
     }
 
@@ -56,7 +89,7 @@ public class Map {
 
         while (!activePoints.isEmpty()) {
             p = activePoints.choose(random);
-            localPoints = candidateCenters.filterM(p, 2*R, true);
+            localPoints = candidateCenters.filterM(p, (int) (1.5*R), true);
 
             if (localPoints.isEmpty()) {
                 activePoints.remove(p);
@@ -115,10 +148,8 @@ public class Map {
         }
 
         for (int i = 0; i < rooms.size(); i++) {
-            for (int j: edgeTo) {
-                if (i == j) {
-                    edges.add(new Edge(rooms.get(i), rooms.get(j)));
-                }
+            if (edgeTo[i] != -1) {
+                edges.add(new Edge(rooms.get(i), rooms.get(edgeTo[i])));
             }
         }
     }

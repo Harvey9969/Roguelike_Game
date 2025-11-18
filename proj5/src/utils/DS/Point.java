@@ -21,6 +21,22 @@ public class Point {
         return Math.abs(x - uddaPoint.x) + Math.abs(y - uddaPoint.y);
     }
 
+    public Point left() {
+        return new Point(x - 1, y);
+    }
+
+    public Point right() {
+        return new Point(x + 1, y);
+    }
+
+    public Point up() {
+        return new Point(x, y + 1);
+    }
+
+    public Point down() {
+        return new Point(x, y - 1);
+    }
+
     @Override
     public int hashCode() {
         return 31 * x + y;
@@ -33,5 +49,10 @@ public class Point {
         }
 
         return false;
+    }
+
+    @Override
+    public String toString() {
+        return x + "," + y;
     }
 }
