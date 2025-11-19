@@ -5,10 +5,10 @@ import tileengine.Tileset;
 import java.util.*;
 
 public class Room extends TSet {
-    private class WallNode {
-        WallNode prev;
-        Point point;
-        WallNode next;
+    public class WallNode {
+        public WallNode prev;
+        public Point point;
+        public WallNode next;
 
         WallNode(WallNode prev, Point point, WallNode next) {
             this.prev = prev;

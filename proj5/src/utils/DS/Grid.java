@@ -128,7 +128,7 @@ public class Grid {
         validateInBounds(start.x, start.y);
         validateInBounds(end.x, end.y);
 
-        if (start == end) {
+        if (start.equals(end)) {
             throw new IllegalArgumentException("Start cannot equal end");
         }
 
@@ -144,12 +144,14 @@ public class Grid {
         HashMap<Point, Integer> distTo = new HashMap<>();
         HashMap<Point, Point> edgeTo = new HashMap<>();
         HashMap<Point, Character> directionTo = new HashMap<>();
+        HashMap<Point, Integer> straightStreak = new HashMap<>();
         HashSet<Point> visited = new HashSet<>();
 
         fringe.add(new PQNode(0, start));
         distTo.put(start, 0);
         edgeTo.put(start, null);
         directionTo.put(start, ' ');
+        straightStreak.put(start, 0);
 
         PQNode node;
         boolean pathFound = false;
@@ -184,15 +186,25 @@ public class Grid {
             for (adjNode adj: neighbors) {
                 Point point = adj.loc;
                 char dir = adj.dir;
-                int cost = 2;
+
+                int ss = straightStreak.get(node.loc);
+                int cost = 5;
 
                 if (dir == directionTo.get(node.loc)) {
-                    cost = 1;
+                    if (ss <= 3) {
+                        cost = 1;
+                    } else {
+                        cost = 4;
+                    }
+
+                    ss++;
+                } else {
+                    ss = 0;
                 }
 
                 if (
                         visited.contains(point)
-                        || !get(point).equals(Tileset.NOTHING)
+                        || !isVisitable(point)
                 ) {
                     continue;
                 }
@@ -200,6 +212,7 @@ public class Grid {
                 if (!distTo.containsKey(point)) {
                     distTo.put(point, distTo.get(node.loc) + cost);
                     edgeTo.put(point, node.loc);
+                    straightStreak.put(point, ss);
                     directionTo.put(point, dir);
 
                     fringe.add(new PQNode(
@@ -209,6 +222,7 @@ public class Grid {
                 } else if (distTo.get(point) > distTo.get(node.loc) + cost) {
                     distTo.put(point, distTo.get(node.loc) + cost);
                     edgeTo.put(point, node.loc);
+                    straightStreak.put(point, ss);
                     directionTo.put(point, dir);
 
                     Point finalPoint = point;
@@ -234,6 +248,29 @@ public class Grid {
         }
 
         return path;
+    }
+
+    private boolean isVisitable(Point point) {
+        int startX = point.x - 1;
+        int stopX = point.x + 1;
+        int startY = point.y - 1;
+        int stopY = point.y + 1;
+
+        for (int x = startX; x <= stopX; x++) {
+            for (int y = startY; y <= stopY; y++) {
+                if (
+                        x == 0
+                        || x == width - 1
+                        || y == 0
+                        || y == height - 1
+                        || get(x, y).equals(Tileset.WALL)
+                ) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 
     private static void validateDimension(int width, int height) {

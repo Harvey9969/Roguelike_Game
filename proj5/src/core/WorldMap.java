@@ -21,7 +21,7 @@ public class WorldMap {
         List<Room> rooms = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
-        poissonRoomPlacement(rooms, 6, 10, 3, random);
+        poissonRoomPlacement(rooms, 6, 10, 4, random);
         euclideanMST(rooms, edges);
         graph = new RoomGraph(rooms);
 
@@ -35,7 +35,7 @@ public class WorldMap {
 
             graph.connect(r1, r2);
 
-            int cost = Integer.MAX_VALUE;
+            double cost = Double.POSITIVE_INFINITY;
             Point r1d = null;
             Point r2d = null;
 
@@ -49,17 +49,18 @@ public class WorldMap {
                 }
             }
 
+            // This throws if r1d / r2d is null
             r1.placeDoor(grid, r1d);
             r2.placeDoor(grid, r2d);
 
-//            grid.add(
-//                    new Path(
-//                            r1,
-//                            grid.astar(r1C, r2C),
-//                            r2
-//                    ),
-//                    false
-//            );
+            grid.add(
+                    new Path(
+                            r1,
+                            grid.astar(r1d, r2d),
+                            r2
+                    ),
+                    true
+            );
         }
     }
 
@@ -151,8 +152,8 @@ public class WorldMap {
         }
     }
 
-    private int doorCost(Point p1, Point p2, PSet doors1, PSet doors2) {
-        int LAMBDA = 4;
+    private double doorCost(Point p1, Point p2, PSet doors1, PSet doors2) {
+        double LAMBDA = 1;
 
         int spacing1 = 0;
         int spacing2 = 0;
@@ -165,6 +166,6 @@ public class WorldMap {
             spacing2 = doors2.closestMDist(p2);
         }
 
-        return p1.mDist(p2) - LAMBDA * (spacing1 + spacing2);
+        return p1.eDist(p2) - LAMBDA * (spacing1 + spacing2);
     }
 }

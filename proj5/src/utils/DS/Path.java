@@ -1,8 +1,12 @@
 package utils.DS;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-public class Path {
+public class Path extends TSet {
     public PSet wallTiles;
     public PSet floorTiles;
 
@@ -13,18 +17,39 @@ public class Path {
         for (Point pathPoint: path) {
             floorTiles.add(pathPoint);
 
-//            for (Point adjPoint : getAdj(pathPoint)) {
-//                if (
-//                        !start.floorTiles.contains(adjPoint)
-//                        && !start.wallTiles.contains(adjPoint)
-//                        && !stop.floorTiles.contains(adjPoint)
-//                        && !stop.wallTiles.contains(adjPoint)
-//                        && !path.contains(adjPoint)
-//                        && !wallTiles.contains(adjPoint)
-//                ) {
-//                    wallTiles.add(adjPoint);
-//                }
-//            }
+            for (Point adjPoint : getAdj(pathPoint)) {
+                Set<Point> startFloorTiles = new HashSet<>();
+                Set<Point> startWallTiles = new HashSet<>();
+                Set<Point> stopFloorTiles = new HashSet<>();
+                Set<Point> stopWallTiles = new HashSet<>();
+
+                for (Point point: start.getFloorTiles()) {
+                    startFloorTiles.add(point);
+                }
+
+                for (Point point: start.getWallTiles()) {
+                    startWallTiles.add(point);
+                }
+
+                for (Point point: stop.getFloorTiles()) {
+                    stopFloorTiles.add(point);
+                }
+
+                for (Point point: stop.getWallTiles()) {
+                    stopWallTiles.add(point);
+                }
+
+                if (
+                        !startFloorTiles.contains(adjPoint)
+                        && !startWallTiles.contains(adjPoint)
+                        && !stopFloorTiles.contains(adjPoint)
+                        && !stopWallTiles.contains(adjPoint)
+                        && !path.contains(adjPoint)
+                        && !wallTiles.contains(adjPoint)
+                ) {
+                    wallTiles.add(adjPoint);
+                }
+            }
         }
     }
 
@@ -38,5 +63,15 @@ public class Path {
         }
 
         return result;
+    }
+
+    @Override
+    public Iterable<Point> getWallTiles() {
+        return wallTiles;
+    }
+
+    @Override
+    public Iterable<Point> getFloorTiles() {
+        return floorTiles;
     }
 }
