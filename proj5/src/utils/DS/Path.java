@@ -2,7 +2,7 @@ package utils.DS;
 
 import java.util.List;
 
-public class Path extends TSet {
+public class Path {
     public PSet wallTiles;
     public PSet floorTiles;
 
@@ -13,18 +13,18 @@ public class Path extends TSet {
         for (Point pathPoint: path) {
             floorTiles.add(pathPoint);
 
-            for (Point adjPoint : getAdj(pathPoint)) {
-                if (
-                        !start.floorTiles.contains(adjPoint)
-                        && !start.wallTiles.contains(adjPoint)
-                        && !stop.floorTiles.contains(adjPoint)
-                        && !stop.wallTiles.contains(adjPoint)
-                        && !path.contains(adjPoint)
-                        && !wallTiles.contains(adjPoint)
-                ) {
-                    wallTiles.add(adjPoint);
-                }
-            }
+//            for (Point adjPoint : getAdj(pathPoint)) {
+//                if (
+//                        !start.floorTiles.contains(adjPoint)
+//                        && !start.wallTiles.contains(adjPoint)
+//                        && !stop.floorTiles.contains(adjPoint)
+//                        && !stop.wallTiles.contains(adjPoint)
+//                        && !path.contains(adjPoint)
+//                        && !wallTiles.contains(adjPoint)
+//                ) {
+//                    wallTiles.add(adjPoint);
+//                }
+//            }
         }
     }
 
@@ -38,15 +38,5 @@ public class Path extends TSet {
         }
 
         return result;
-    }
-
-    @Override
-    public Iterable<Point> getWallTiles() {
-        return wallTiles;
-    }
-
-    @Override
-    public Iterable<Point> getFloorTiles() {
-        return floorTiles;
     }
 }

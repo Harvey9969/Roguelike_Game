@@ -1,6 +1,5 @@
 package core;
 
-import tileengine.Tileset;
 import utils.DS.*;
 
 import java.util.*;
@@ -36,38 +35,31 @@ public class WorldMap {
 
             graph.connect(r1, r2);
 
-            Point[] closest = r1.wallTiles.closestE(r2.wallTiles);
-            Point r1C = closest[0];
-            Point r2C = closest[1];
+            int cost = Integer.MAX_VALUE;
+            Point r1d = null;
+            Point r2d = null;
 
-            for (Point point: List.of(r1C, r1C.left(), r1C.right(), r1C.down(), r1C.up())) {
-                if (r1.wallTiles.remove(point)) {
-                    grid.set(new Tile(point, Tileset.NOTHING));
+            for (Point r1dC: r1.getDoorCands()) {
+                for (Point r2dC: r2.getDoorCands()) {
+                    if (cost > doorCost(r1dC, r2dC, r1.doors, r2.doors)) {
+                        r1d = r1dC;
+                        r2d = r2dC;
+                        cost = doorCost(r1dC, r2dC, r1.doors, r2.doors);
+                    }
                 }
             }
 
-            for (Point point: moveCombos(r1C, 2)) {
-                r1.wallTiles.remove(point);
-            }
+            r1.placeDoor(grid, r1d);
+            r2.placeDoor(grid, r2d);
 
-            for (Point point: List.of(r2C, r2C.left(), r2C.right(), r2C.down(), r2C.up())) {
-                if (r2.wallTiles.remove(point)) {
-                    grid.set(new Tile(point, Tileset.NOTHING));
-                }
-            }
-
-            for (Point point: moveCombos(r2C, 2)) {
-                r2.wallTiles.remove(point);
-            }
-
-            grid.add(
-                    new Path(
-                            r1,
-                            grid.astar(r1C, r2C),
-                            r2
-                    ),
-                    false
-            );
+//            grid.add(
+//                    new Path(
+//                            r1,
+//                            grid.astar(r1C, r2C),
+//                            r2
+//                    ),
+//                    false
+//            );
         }
     }
 
@@ -159,27 +151,20 @@ public class WorldMap {
         }
     }
 
-    private List<Point> moveCombos(Point p, int depth) {
-        record movePoint(int moves, Point loc) {}
+    private int doorCost(Point p1, Point p2, PSet doors1, PSet doors2) {
+        int LAMBDA = 4;
 
-        Deque<movePoint> deque = new ArrayDeque<>();
-        deque.addLast(new movePoint(0, p));
+        int spacing1 = 0;
+        int spacing2 = 0;
 
-        List<Point> result = new ArrayList<>();
-
-        while (!deque.isEmpty()) {
-            movePoint elem = deque.removeFirst();
-
-            if (elem.moves == depth) {
-                result.add(elem.loc);
-            } else {
-                deque.addLast(new movePoint(elem.moves + 1, elem.loc.left()));
-                deque.addLast(new movePoint(elem.moves + 1, elem.loc.right()));
-                deque.addLast(new movePoint(elem.moves + 1, elem.loc.up()));
-                deque.addLast(new movePoint(elem.moves + 1, elem.loc.down()));
-            }
+        if (!doors1.isEmpty()) {
+            spacing1 = doors1.closestMDist(p1);
         }
 
-        return result;
+        if (!doors2.isEmpty()) {
+            spacing2 = doors2.closestMDist(p2);
+        }
+
+        return p1.mDist(p2) - LAMBDA * (spacing1 + spacing2);
     }
 }

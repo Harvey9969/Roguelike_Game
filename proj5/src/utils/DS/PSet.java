@@ -26,23 +26,19 @@ public class PSet extends ArrayList<Point> {
         return filtered;
     }
 
-    public Point[] closestE(PSet uddaPSet) {
-        double minDist = Double.POSITIVE_INFINITY;
-        Point[] result = new Point[2];
+    public int closestMDist(Point comparison) {
+        if (size() == 0) {
+            throw new IllegalStateException("Cannot find closest on empty PSet");
+        }
+
+        int dist = Integer.MAX_VALUE;
 
         for (Point point: this) {
-            for (Point uddaPoint: uddaPSet) {
-                double dist = point.eDist(uddaPoint);
-
-                if (minDist > dist) {
-                    minDist = dist;
-
-                    result[0] = point;
-                    result[1] = uddaPoint;
-                }
+            if (dist > point.mDist(comparison)) {
+                dist = point.mDist(comparison);
             }
         }
 
-        return result;
+        return dist;
     }
 }

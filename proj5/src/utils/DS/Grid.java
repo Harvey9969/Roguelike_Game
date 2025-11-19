@@ -59,26 +59,25 @@ public class Grid {
         return get(p.x, p.y);
     }
 
-    public void add(TSet uddaTiles, boolean noOverwrite) {
+    public void add(Iterable<Tile> uddaTiles, boolean noOverwrite) {
         if (!noOverwrite) {
             for (Tile tile: uddaTiles) {
                 set(tile);
             }
-            return;
-        }
+        } else {
+            for (Tile tile: uddaTiles) {
+                TETile nativeTile = get(tile.point().x, tile.point().y);
 
-        for (Tile tile: uddaTiles) {
-            TETile nativeTile = get(tile.point().x, tile.point().y);
-
-            if (nativeTile.equals(Tileset.NOTHING)) {
-                set(tile);
-            } else {
-                throw new IllegalStateException(String.format(
-                        "Cannot place %s at (%s) obstructed by %s",
-                        tile.tileType(),
-                        tile.point(),
-                        nativeTile
-                ));
+                if (nativeTile.equals(Tileset.NOTHING)) {
+                    set(tile);
+                } else {
+                    throw new IllegalStateException(String.format(
+                            "Cannot place %s at (%s) obstructed by %s",
+                            tile.tileType(),
+                            tile.point(),
+                            nativeTile
+                    ));
+                }
             }
         }
     }
