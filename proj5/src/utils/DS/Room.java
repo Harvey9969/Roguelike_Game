@@ -5,7 +5,7 @@ import tileengine.Tileset;
 import java.util.*;
 
 public class Room extends TSet {
-    public class WallNode {
+    private class WallNode {
         public WallNode prev;
         public Point point;
         public WallNode next;
@@ -70,22 +70,22 @@ public class Room extends TSet {
         wallTileSize++;
 
         for (int x = xStart + 1; x <= xStop; x++) {
-            wallTiles = wallTiles.add(wallTiles.point.right());
+            wallTiles = wallTiles.add(new Point(x, yStart));
             wallTileSize++;
         }
 
         for (int y = yStart + 1; y <= yStop; y++) {
-            wallTiles = wallTiles.add(wallTiles.point.up());
+            wallTiles = wallTiles.add(new Point(xStop, y));
             wallTileSize++;
         }
 
-        for (int x = xStop; x >= xStart + 1; x--) {
-            wallTiles = wallTiles.add(wallTiles.point.left());
+        for (int x = xStop - 1; x >= xStart; x--) {
+            wallTiles = wallTiles.add(new Point(x, yStop));
             wallTileSize++;
         }
 
-        for (int y = yStop; y >= yStart + 2; y--) {
-            wallTiles = wallTiles.add(wallTiles.point.down());
+        for (int y = yStop - 1; y > yStart; y--) {
+            wallTiles = wallTiles.add(new Point(xStart, y));
             wallTileSize++;
         }
     }
@@ -173,22 +173,19 @@ public class Room extends TSet {
             throw new IllegalArgumentException("Only valid door candidates can be placed");
         }
 
-        WallNode p = wallTiles;
-        while (!p.next.next.point.equals(door)) {
-            p = p.next;
+        while (!wallTiles.next.next.point.equals(door)) {
+            wallTiles = wallTiles.next;
         }
 
-        grid.set(new Tile(p.next.point, Tileset.NOTHING));
-        doors.add(p.next.point);
+        grid.set(new Tile(wallTiles.next.point, Tileset.NOTHING));
 
-        grid.set(new Tile(p.next.next.point, Tileset.NOTHING));
-        doors.add(p.next.next.point);
+        grid.set(new Tile(wallTiles.next.next.point, Tileset.NOTHING));
+        doors.add(wallTiles.next.next.point);
 
-        grid.set(new Tile(p.next.next.next.point, Tileset.NOTHING));
-        doors.add(p.next.next.next.point);
+        grid.set(new Tile(wallTiles.next.next.next.point, Tileset.NOTHING));
 
-        p.next = p.next.next.next.next;
-        p.next.prev = p;
+        wallTiles.next = wallTiles.next.next.next.next;
+        wallTiles.next.prev = wallTiles;
 
         wallTileSize -= 3;
     }

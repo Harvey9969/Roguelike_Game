@@ -125,9 +125,15 @@ public class Grid {
     }
 
     public List<Point> astar(Point start, Point end) {
+        final int TURN_COST = 5;
+
+        final int STRAIGHT_COST_SHORT = 1;
+        final int STRAIGHT_COST_LONG = 4;
+
+        final int STRAIGHT_BURST = 3;
+
         validateInBounds(start.x, start.y);
         validateInBounds(end.x, end.y);
-
         if (start.equals(end)) {
             throw new IllegalArgumentException("Start cannot equal end");
         }
@@ -153,6 +159,7 @@ public class Grid {
         directionTo.put(start, ' ');
         straightStreak.put(start, 0);
 
+        int cost;
         PQNode node;
         boolean pathFound = false;
 
@@ -187,26 +194,23 @@ public class Grid {
                 Point point = adj.loc;
                 char dir = adj.dir;
 
-                int ss = straightStreak.get(node.loc);
-                int cost = 5;
-
-                if (dir == directionTo.get(node.loc)) {
-                    if (ss <= 3) {
-                        cost = 1;
-                    } else {
-                        cost = 4;
-                    }
-
-                    ss++;
-                } else {
-                    ss = 0;
+                if (visited.contains(point) || !isVisitable(point)) {
+                    continue;
                 }
 
-                if (
-                        visited.contains(point)
-                        || !isVisitable(point)
-                ) {
-                    continue;
+                int ss = straightStreak.get(node.loc);
+
+                if (isScraping(dir, point)) {
+                    cost = 10;
+                } else if (dir == directionTo.get(node.loc) && ss <= STRAIGHT_BURST) {
+                    cost = STRAIGHT_COST_SHORT;
+                    ss++;
+                } else if (dir == directionTo.get(node.loc)) {
+                    cost = STRAIGHT_COST_LONG;
+                    ss++;
+                } else {
+                    cost = TURN_COST;
+                    ss = 0;
                 }
 
                 if (!distTo.containsKey(point)) {
@@ -250,6 +254,39 @@ public class Grid {
         return path;
     }
 
+    private boolean isScraping(char dir, Point point) {
+        int x = point.x;
+        int y = point.y;
+
+        if (dir == 'N') {
+            return
+                    (isInBounds(x - 2, y) && get(x - 2, y).equals(Tileset.WALL))
+                    || (isInBounds(x - 2, y + 1) && get(x - 2, y + 1).equals(Tileset.WALL))
+                    || (isInBounds(x + 2, y) && get(x + 2, y).equals(Tileset.WALL))
+                    || (isInBounds(x + 2, y + 1) && get(x + 2, y + 1).equals(Tileset.WALL));
+        } else if (dir == 'E') {
+            return
+                    (isInBounds(x, y - 2) && get(x, y - 2).equals(Tileset.WALL))
+                    || (isInBounds(x + 1, y - 2) && get(x + 1, y - 2).equals(Tileset.WALL))
+                    || (isInBounds(x, y + 2) && get(x, y + 2).equals(Tileset.WALL))
+                    || (isInBounds(x + 1, y + 2) && get(x + 1, y + 2).equals(Tileset.WALL));
+        } else if (dir == 'S') {
+            return
+                    (isInBounds(x - 2, y) && get(x - 2, y).equals(Tileset.WALL))
+                    || (isInBounds(x - 2, y - 1) && get(x - 2, y - 1).equals(Tileset.WALL))
+                    || (isInBounds(x + 2, y) && get(x + 2, y).equals(Tileset.WALL))
+                    || (isInBounds(x + 2, y - 1) && get(x + 2, y - 1).equals(Tileset.WALL));
+        } else if (dir == 'W') {
+            return
+                    (isInBounds(x, y - 2) && get(x, y - 2).equals(Tileset.WALL))
+                    || (isInBounds(x - 1, y - 2) && get(x - 1, y - 2).equals(Tileset.WALL))
+                    || (isInBounds(x, y + 2) && get(x, y + 2).equals(Tileset.WALL))
+                    || (isInBounds(x - 1, y + 2) && get(x - 1, y + 2).equals(Tileset.WALL));
+        }
+
+        return false;
+    }
+
     private boolean isVisitable(Point point) {
         int startX = point.x - 1;
         int stopX = point.x + 1;
@@ -289,13 +326,15 @@ public class Grid {
     }
 
     private void validateInBounds(int x, int y) {
-        if (
-                x < 0
-                || y < 0
-                || x >= width
-                || y >= height
-        ) {
+        if (!isInBounds(x, y)) {
             throw new ArrayIndexOutOfBoundsException("grid index OOB");
         }
+    }
+
+    private boolean isInBounds(int x, int y) {
+        return x >= 0
+                && y >= 0
+                && x < width
+                && y < height;
     }
 }

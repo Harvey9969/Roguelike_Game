@@ -8,18 +8,15 @@ public class RoomGraph {
 
     public RoomGraph(Iterable<Room> rooms) {
         int ind = 0;
-        int size = 1;
 
         roomToInd = new HashMap<>();
 
         for (Room room: rooms) {
-            roomToInd.put(room, ind);
-            ind++;
-            size++;
+            roomToInd.put(room, ind++);
         }
 
-        adjacencyList = new Set[size];
-        for (int i = 0; i < size; i++) {
+        adjacencyList = new Set[ind];
+        for (int i = 0; i < ind; i++) {
             adjacencyList[i] = new HashSet<>();
         }
     }

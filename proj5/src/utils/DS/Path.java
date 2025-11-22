@@ -1,10 +1,8 @@
 package utils.DS;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Path extends TSet {
     public PSet wallTiles;
@@ -17,27 +15,28 @@ public class Path extends TSet {
         for (Point pathPoint: path) {
             floorTiles.add(pathPoint);
 
+            Set<Point> startFloorTiles = new HashSet<>();
+            Set<Point> startWallTiles = new HashSet<>();
+            Set<Point> stopFloorTiles = new HashSet<>();
+            Set<Point> stopWallTiles = new HashSet<>();
+
+            for (Point point: start.getFloorTiles()) {
+                startFloorTiles.add(point);
+            }
+
+            for (Point point: start.getWallTiles()) {
+                startWallTiles.add(point);
+            }
+
+            for (Point point: stop.getFloorTiles()) {
+                stopFloorTiles.add(point);
+            }
+
+            for (Point point: stop.getWallTiles()) {
+                stopWallTiles.add(point);
+            }
+
             for (Point adjPoint : getAdj(pathPoint)) {
-                Set<Point> startFloorTiles = new HashSet<>();
-                Set<Point> startWallTiles = new HashSet<>();
-                Set<Point> stopFloorTiles = new HashSet<>();
-                Set<Point> stopWallTiles = new HashSet<>();
-
-                for (Point point: start.getFloorTiles()) {
-                    startFloorTiles.add(point);
-                }
-
-                for (Point point: start.getWallTiles()) {
-                    startWallTiles.add(point);
-                }
-
-                for (Point point: stop.getFloorTiles()) {
-                    stopFloorTiles.add(point);
-                }
-
-                for (Point point: stop.getWallTiles()) {
-                    stopWallTiles.add(point);
-                }
 
                 if (
                         !startFloorTiles.contains(adjPoint)

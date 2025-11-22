@@ -4,14 +4,11 @@ import tileengine.Tileset;
 
 import java.util.Iterator;
 
-public class TSet implements Iterable<Tile> {
-    public Iterable<Point> getWallTiles() {
-        return null;
-    }
+public abstract class TSet implements Iterable<Tile> {
+    public abstract Iterable<Point> getWallTiles();
 
-    public Iterable<Point> getFloorTiles() {
-        return null;
-    }
+    public abstract Iterable<Point> getFloorTiles();
+
 
     @Override
     public Iterator<Tile> iterator() {

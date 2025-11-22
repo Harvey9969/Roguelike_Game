@@ -21,12 +21,12 @@ public class WorldMap {
         List<Room> rooms = new ArrayList<>();
         List<Edge> edges = new ArrayList<>();
 
-        poissonRoomPlacement(rooms, 6, 10, 4, random);
+        poissonRoomPlacement(rooms, 6, 10, 10, random);
         euclideanMST(rooms, edges);
         graph = new RoomGraph(rooms);
 
         for (Room room: rooms) {
-            grid.add(room, true);
+            grid.add(room, false);
         }
 
         for (Edge edge: edges) {
@@ -68,7 +68,7 @@ public class WorldMap {
         PSet candidateCenters = new PSet();
         PSet activePoints = new PSet();
 
-        int R = maxDim + minDim + minCorridor;
+        int R = maxDim + minCorridor;
         int bufferDist = (maxDim / 2) + 1;
 
         for (int y = bufferDist; y < height - bufferDist; y++) {
@@ -87,7 +87,7 @@ public class WorldMap {
 
         while (!activePoints.isEmpty()) {
             p = activePoints.choose(random);
-            localPoints = candidateCenters.filterM(p, (int) (1.5*R), true);
+            localPoints = candidateCenters.filterM(p, (int) (1.5 * R), true);
 
             if (localPoints.isEmpty()) {
                 activePoints.remove(p);
