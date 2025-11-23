@@ -2,13 +2,15 @@ package utils.DS;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 public class Path extends TSet {
     public PSet wallTiles;
     public PSet floorTiles;
 
-    public Path(Room start, List<Point> path, Room stop) {
+    public Path(Room start, List<Point> path, Room stop, Random random) {
+        super(random);
         wallTiles = new PSet();
         floorTiles = new PSet();
 

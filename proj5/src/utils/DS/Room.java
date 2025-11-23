@@ -1,8 +1,11 @@
 package utils.DS;
 
+import tileengine.TETile;
 import tileengine.Tileset;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 public class Room extends TSet {
     private class WallNode {
@@ -48,6 +51,7 @@ public class Room extends TSet {
     public final PSet doors;
 
     public Room(Point center, int min, int max, Random random) {
+        super(random);
         this.center = center;
 
         genStarts(min, max, random);
@@ -188,6 +192,20 @@ public class Room extends TSet {
         wallTiles.next.prev = wallTiles;
 
         wallTileSize -= 3;
+    }
+
+    public void placeMarker(int id, Grid grid) {
+        grid.set(new Tile(
+                center,
+                new TETile(
+                        ' ',
+                        Color.WHITE,
+                        Color.BLACK,
+                        "wall",
+                        prefix + "markers/" + id + ".png",
+                        111
+                )
+        ));
     }
 
     @Override

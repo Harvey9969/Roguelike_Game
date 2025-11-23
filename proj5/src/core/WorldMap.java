@@ -23,7 +23,7 @@ public class WorldMap {
 
         poissonRoomPlacement(rooms, 6, 10, 10, random);
         euclideanMST(rooms, edges);
-        graph = new RoomGraph(rooms);
+        graph = new RoomGraph(rooms, random);
 
         for (Room room: rooms) {
             grid.add(room, false);
@@ -57,11 +57,14 @@ public class WorldMap {
                     new Path(
                             r1,
                             grid.astar(r1d, r2d),
-                            r2
+                            r2,
+                            random
                     ),
                     true
             );
         }
+
+        graph.genDungeon(grid);
     }
 
     private void poissonRoomPlacement(List<Room> rooms, int minDim, int maxDim, int minCorridor, Random random) {

@@ -26,7 +26,7 @@ public class TiledImage implements Iterable<Tile> {
                                 Color.BLACK,
                                 "img " + x + "," + y,
                                 prefix + "/tile_" + x + "_" + (height - 1 - y) +".png",
-                                0
+                                999
                         )
                 ));
             }
