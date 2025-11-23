@@ -3,8 +3,8 @@ package utils.DS;
 import java.util.*;
 
 public class RoomGraph {
-    private final Map<Room, Integer> roomToInd;
-    private final Map<Integer, Room> indToRoom;
+    public final Map<Room, Integer> roomToInd;
+    public final Map<Integer, Room> indToRoom;
     private final Set<Integer>[] adjacencyList;
     private final int numRooms;
 
@@ -109,19 +109,14 @@ public class RoomGraph {
 
             if (cumSum > roomsx1by3 && !foundFirst) {
                 p1 = diameter.get(ind);
-                indToRoom.get(p1).placeMarker(1, grid);
                 foundFirst = true;
             } else if (cumSum > roomsx2by3 && !foundSecond) {
                 p2 = diameter.get(ind);
-                indToRoom.get(p2).placeMarker(1, grid);
                 foundSecond = true;
             }
 
             ind++;
         }
-
-        indToRoom.get(start).placeMarker(0, grid);
-        indToRoom.get(end).placeMarker(1, grid);
 
         for (int i = 0; i < numRooms; i++) {
             if (!List.of(p1, p2, start, end).contains(i)) {

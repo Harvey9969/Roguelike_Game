@@ -194,20 +194,6 @@ public class Room extends TSet {
         wallTileSize -= 3;
     }
 
-    public void placeMarker(int id, Grid grid) {
-        grid.set(new Tile(
-                center,
-                new TETile(
-                        ' ',
-                        Color.WHITE,
-                        Color.BLACK,
-                        "wall",
-                        prefix + "markers/" + id + ".png",
-                        111
-                )
-        ));
-    }
-
     @Override
     public Iterable<Point> getWallTiles() {
         return new Iterable<Point>() {

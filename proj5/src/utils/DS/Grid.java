@@ -331,7 +331,7 @@ public class Grid {
         }
     }
 
-    private boolean isInBounds(int x, int y) {
+    public boolean isInBounds(int x, int y) {
         return x >= 0
                 && y >= 0
                 && x < width

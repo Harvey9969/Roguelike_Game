@@ -1,5 +1,6 @@
 package tileengine;
 
+import core.charecters.Characters;
 import edu.princeton.cs.algs4.StdDraw;
 
 import java.awt.Color;
@@ -12,7 +13,7 @@ import java.awt.Font;
  * allowing scrolling of the screen or tracking the avatar or something similar.
  */
 public class TERenderer {
-    private static final int TILE_SIZE = 16;
+    private static final int TILE_SIZE = 64;
     private int width;
     private int height;
     private int xOffset;
@@ -88,6 +89,13 @@ public class TERenderer {
         StdDraw.show();
     }
 
+    public void renderFrame(TETile[][] world, Iterable<Characters> characters, int cameraX, int cameraY) {
+        StdDraw.clear(new Color(0, 0, 0));
+        drawTiles(world);
+        drawCharacters(characters, cameraX, cameraY);
+        StdDraw.show();
+    }
+
     /**
      * Draws all world tiles without clearing the canvas or showing the tiles.
      * @param world the 2D TETile[][] array to render
@@ -103,6 +111,16 @@ public class TERenderer {
                 }
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
+        }
+    }
+
+    /**
+     * Draws all the characters in the Iterable.
+     * @param characters the Iterable of characters to render
+     */
+    public void drawCharacters(Iterable<Characters> characters, int cameraX, int cameraY) {
+        for (Characters c: characters) {
+            c.draw(cameraX, cameraY);
         }
     }
 

@@ -1,5 +1,9 @@
 package core;
 
+import core.charecters.Characters;
+import core.charecters.Player;
+import core.charecters.Princess;
+import tileengine.Tileset;
 import utils.DS.*;
 
 import java.util.*;
@@ -11,8 +15,12 @@ public class WorldMap {
     public int width;
     public int height;
 
+    public Player player;
+    public Set<Characters> charactersSet;
+
     public WorldMap(long seed, int width, int height) {
         Random random = new Random(seed);
+        charactersSet = new HashSet<>();
         grid = new Grid(width, height);
 
         this.width = width;
@@ -65,6 +73,14 @@ public class WorldMap {
         }
 
         graph.genDungeon(grid);
+        Room startRoom = graph.indToRoom.get(graph.start);
+        Room p1Room = graph.indToRoom.get(graph.p1);
+
+        player = new Player(startRoom.center.x, startRoom.center.y, grid, "player.png");
+        charactersSet.add(player);
+
+        Princess p1 = new Princess(p1Room.center.x, p1Room.center.y, grid, "p1.png");
+        charactersSet.add(p1);
     }
 
     private void poissonRoomPlacement(List<Room> rooms, int minDim, int maxDim, int minCorridor, Random random) {
