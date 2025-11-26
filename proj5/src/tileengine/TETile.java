@@ -27,6 +27,7 @@ public class TETile {
     private final Color backgroundColor;
     private final String description;
     private final String filepath;
+    private final Collider collider;
     private final int id;
 
     /**
@@ -37,13 +38,23 @@ public class TETile {
      * @param description The description of the tile, shown in the GUI on hovering over the tile.
      * @param filepath Full path to image to be used for this tile. Must be correct size (16x16)
      */
-    public TETile(char character, Color textColor, Color backgroundColor, String description,
-                  String filepath, int id) {
-        this.character = character;
-        this.textColor = textColor;
-        this.backgroundColor = backgroundColor;
+    public TETile(String description, String filepath, Collider collider, int id) {
+        this.character = ' ';
+        this.textColor = Color.BLACK;
+        this.backgroundColor = Color.BLACK;
         this.description = description;
         this.filepath = filepath;
+        this.collider = collider;
+        this.id = id;
+    }
+
+    public TETile(String description, String filepath, int id) {
+        this.character = ' ';
+        this.textColor = Color.BLACK;
+        this.backgroundColor = Color.BLACK;
+        this.description = description;
+        this.filepath = filepath;
+        this.collider = new Collider(0, TERenderer.TILE_SIZE - 1, 0, TERenderer.TILE_SIZE - 1);
         this.id = id;
     }
 
@@ -61,29 +72,9 @@ public class TETile {
         this.backgroundColor = backgroundColor;
         this.description = description;
         this.filepath = null;
+        this.collider = new Collider(0, TERenderer.TILE_SIZE - 1, 0, TERenderer.TILE_SIZE - 1);
         this.id = id;
     }
-
-    /**
-     * Creates a copy of TETile t, except with given textColor.
-     * @param t tile to copy
-     * @param textColor foreground color for tile copy
-     */
-    public TETile(TETile t, Color textColor) {
-        this(t.character, textColor, t.backgroundColor, t.description, t.filepath, t.id);
-    }
-
-    /**
-     * Creates a copy of TETile t, except with given character.
-     * @param t tile to copy
-     * @param c character for tile copy
-     */
-    public TETile(TETile t, char c) {
-        this(c, t.textColor, t.backgroundColor, t.description, t.filepath, t.id);
-    }
-
-
-
 
     /**
      * Draws the tile to the screen at location x, y. If a valid filepath is provided,
@@ -137,82 +128,6 @@ public class TETile {
     }
 
     /**
-     * Creates a copy of the given tile with a slightly different text color. The new
-     * color will have a red value that is within dr of the current red value,
-     * and likewise with dg and db.
-     * @param t the tile to copy
-     * @param dr the maximum difference in red value
-     * @param dg the maximum difference in green value
-     * @param db the maximum difference in blue value
-     * @param r the random number generator to use
-     */
-    public static TETile colorVariant(TETile t, int dr, int dg, int db, Random r) {
-        Color oldColor = t.textColor;
-        int newRed = newColorValue(oldColor.getRed(), dr, r);
-        int newGreen = newColorValue(oldColor.getGreen(), dg, r);
-        int newBlue = newColorValue(oldColor.getBlue(), db, r);
-
-        Color c = new Color(newRed, newGreen, newBlue);
-
-        return new TETile(t, c);
-    }
-
-    private static int newColorValue(int v, int dv, Random r) {
-        int rawNewValue = v + RandomUtils.uniform(r, -dv, dv + 1);
-
-        // make sure value doesn't fall outside of the range 0 to 255.
-        int newValue = Math.min(255, Math.max(0, rawNewValue));
-        return newValue;
-    }
-
-    /**
-     * Converts the given 2D array to a String. Handy for debugging.
-     * Note that since y = 0 is actually the bottom of your world when
-     * drawn using the tile rendering engine, this print method has to
-     * print in what might seem like backwards order (so that the 0th4848747072185569509
-     * row gets printed last).
-     * @param world the 2D world to print
-     * @return string representation of the world
-     */
-    public static String toString(TETile[][] world) {
-        int width = world.length;
-        int height = world[0].length;
-        StringBuilder sb = new StringBuilder();
-
-        for (int y = height - 1; y >= 0; y -= 1) {
-            for (int x = 0; x < width; x += 1) {
-                if (world[x][y] == null) {
-                    throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
-                            + " is null.");
-                }
-                sb.append(world[x][y].character());
-            }
-            sb.append('\n');
-        }
-        return sb.toString();
-    }
-
-    /**
-     * Makes a copy of the given 2D tile array.
-     * @param tiles the 2D array to copy
-     **/
-    public static TETile[][] copyOf(TETile[][] tiles) {
-        if (tiles == null) {
-            return null;
-        }
-
-        TETile[][] copy = new TETile[tiles.length][];
-
-        int i = 0;
-        for (TETile[] column : tiles) {
-            copy[i] = Arrays.copyOf(column, column.length);
-            i += 1;
-        }
-
-        return copy;
-    }
-
-    /**
      * Checks if two tiles are equal by comparing their IDs.
      * @param o object to compare with
      * @return boolean representing equality
@@ -228,5 +143,9 @@ public class TETile {
     @Override
     public String toString() {
         return description;
+    }
+
+    public Collider getCollider() {
+        return collider;
     }
 }

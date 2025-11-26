@@ -97,7 +97,7 @@ public class Room extends TSet {
 
         // top
         for (int x = xStop - 1; x > xStart; x--) {
-            wallTiles = wallTiles.add(new Tile(new Point(x, yStop), Tileset.UPPER_WALL));
+            wallTiles = wallTiles.add(new Tile(new Point(x, yStop), Tileset.UPPER_INNER_WALL));
             wallTileSize++;
         }
 

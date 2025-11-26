@@ -13,7 +13,7 @@ import java.awt.Font;
  * allowing scrolling of the screen or tracking the avatar or something similar.
  */
 public class TERenderer {
-    private static final int TILE_SIZE = 32;
+    public static final int TILE_SIZE = 32;
     private int width;
     private int height;
     private int xOffset;
@@ -85,14 +85,16 @@ public class TERenderer {
      */
     public void renderFrame(TETile[][] world) {
         StdDraw.clear(new Color(0, 0, 0));
-        drawTiles(world);
+        drawTiles(world, true);
+        drawTiles(world, false);
         StdDraw.show();
     }
 
     public void renderFrame(TETile[][] world, Iterable<Characters> characters, int cameraX, int cameraY) {
         StdDraw.clear(new Color(0, 0, 0));
-        drawTiles(world);
+        drawTiles(world, false);
         drawCharacters(characters, cameraX, cameraY);
+        drawTiles(world, true);
         StdDraw.show();
     }
 
@@ -100,7 +102,7 @@ public class TERenderer {
      * Draws all world tiles without clearing the canvas or showing the tiles.
      * @param world the 2D TETile[][] array to render
      */
-    public void drawTiles(TETile[][] world) {
+    public void drawTiles(TETile[][] world, boolean TonlyFexcludingBWalls) {
         int numXTiles = world.length;
         int numYTiles = world[0].length;
         for (int x = 0; x < numXTiles; x += 1) {
@@ -109,6 +111,13 @@ public class TERenderer {
                     throw new IllegalArgumentException("Tile at position x=" + x + ", y=" + y
                             + " is null.");
                 }
+
+                if (!TonlyFexcludingBWalls && world[x][y].description().equals("upper outer wall")) {
+                    continue;
+                } else if (TonlyFexcludingBWalls && !world[x][y].description().equals("upper outer wall")) {
+                    continue;
+                }
+
                 world[x][y].draw(x + xOffset, y + yOffset);
             }
         }

@@ -87,7 +87,7 @@ public class Path extends TSet {
             Adj surr = surroundingWalls(wallPoints, wallPoint);
 
             if (surr.up && surr.left && !surr.down && !surr.right) {
-                wallTiles.add(new Tile(wallPoint, Tileset.OUTER_PATH_RBC_WALL));
+                wallTiles.add(new Tile(wallPoint, Tileset.LEFT_POLE));
             } else if (surr.up && surr.right && !surr.down && !surr.left) {
                 wallTiles.add(new Tile(wallPoint, Tileset.LBC_WALL));
             } else if (surr.down && surr.left && !surr.up && !surr.right) {
@@ -95,7 +95,7 @@ public class Path extends TSet {
             } else if (surr.down && surr.right && !surr.up && !surr.left) {
                 wallTiles.add(new Tile(wallPoint, Tileset.RIGHT_WALL));
             } else if (surr.left && surr.right) {
-                wallTiles.add(new Tile(wallPoint, Tileset.UPPER_WALL));
+                wallTiles.add(new Tile(wallPoint, Tileset.UPPER_OUTER_WALL));
             } else if (surr.up && surr.down) {
                 wallTiles.add(new Tile(wallPoint, Tileset.LEFT_WALL));
             }
@@ -107,9 +107,9 @@ public class Path extends TSet {
 //            wallTiles.add(new Tile(wallPoint, Tileset.FLOWER));
 
             if (surr.up && surr.left && !surr.down && !surr.right) {
-                wallTiles.add(new Tile(wallPoint, Tileset.INNER_PATH_RBC_WALL));
+                wallTiles.add(new Tile(wallPoint, Tileset.LEFT_POLE));
             } else if (surr.up && surr.right && !surr.down && !surr.left) {
-                wallTiles.add(new Tile(wallPoint, Tileset.INNER_PATH_LBC_WALL));
+                wallTiles.add(new Tile(wallPoint, Tileset.RIGHT_POLE));
             } else if (surr.down && surr.left && !surr.up && !surr.right) {
                 wallTiles.add(new Tile(wallPoint, Tileset.RTC_WALL));
             } else if (surr.down && surr.right && !surr.up && !surr.left) {
@@ -121,18 +121,8 @@ public class Path extends TSet {
             } else if (surr.left && surr.right) {
                 wallTiles.add(new Tile(wallPoint, Tileset.BOTTOM_WALL));
             } else if (surr.left) {
-                wallTiles.add(new Tile(wallPoint, Tileset.INNER_PATH_RBC_WALL));
+                wallTiles.add(new Tile(wallPoint, Tileset.LEFT_POLE));
             }
-
-//            else {
-//                System.out.printf(
-//                        "up: %b, down: %b, left: %b, right:%b",
-//                        surr.up,
-//                        surr.down,
-//                        surr.left,
-//                        surr.right
-//                );
-//            }
         }
 
         for (Point wallPoint: cornerWalls) {
@@ -142,7 +132,7 @@ public class Path extends TSet {
 
             if (surr.up && surr.left) {
                 if (path.contains(wallPoint.right())) {
-                    wallTiles.add(new Tile(wallPoint, Tileset.INNER_PATH_RBC_WALL));
+                    wallTiles.add(new Tile(wallPoint, Tileset.LEFT_POLE));
                 } else {
                     wallTiles.add(new Tile(wallPoint, Tileset.RBC_WALL));
                 }

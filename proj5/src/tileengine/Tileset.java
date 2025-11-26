@@ -23,27 +23,50 @@ public class Tileset {
     public static final TETile WALL = new TETile('#', new Color(216, 128, 128), Color.darkGray,
             "wall", 1);
 
-    public static final TETile BOTTOM_WALL = new TETile(' ', Color.black, Color.black, "bottom wall", prefix + "/wall/bottomWall.png", 1);
-    public static final TETile UPPER_WALL = new TETile(' ', Color.black, Color.black, "upper wall", prefix + "/wall/upperWall.png", 1);
-    public static final TETile LEFT_WALL = new TETile(' ', Color.black, Color.black, "left wall", prefix + "/wall/leftWall.png", 1);
-    public static final TETile RIGHT_WALL = new TETile(' ', Color.black, Color.black, "right wall", prefix + "/wall/rightWall.png", 1);
+    public static final TETile UPPER_INNER_WALL = new TETile("upper inner wall", prefix + "/wall/upperWall.png", 1);
+    public static final TETile UPPER_OUTER_WALL = new TETile("upper outer wall", prefix + "/wall/upperWall.png", 1);
 
-    public static final TETile LBC_WALL = new TETile(' ', Color.black, Color.black, "lbc wall", prefix + "/wall/leftBottomCorner.png", 1);
-    public static final TETile RBC_WALL = new TETile(' ', Color.black, Color.black, "rbc wall", prefix + "/wall/rightBottomCorner.png", 1);
-    public static final TETile LTC_WALL = new TETile(' ', Color.black, Color.black, "ltc wall", prefix + "/wall/upperLeftCorner.png", 1);
-    public static final TETile RTC_WALL = new TETile(' ', Color.black, Color.black, "rtc wall", prefix + "/wall/upperRightCorner.png", 1);
+    public static final TETile BOTTOM_WALL = new TETile(
+            "bottom wall",
+            prefix + "/wall/bottomWall.png",
+            new Collider(0, 31, 0, 31),
+            1
+    );
 
-    public static final TETile OUTER_PATH_RBC_WALL = new TETile(' ', Color.black, Color.black, "rbc outer path wall", prefix + "/wall/outerPathRBC.png", 1);
+    public static final TETile LEFT_WALL = new TETile(
+            "left wall",
+            prefix + "/wall/leftWall.png",
+            new Collider(0, 7, 0, 31),
+            1
+    );
+    public static final TETile RIGHT_WALL = new TETile(
+            "right wall",
+            prefix + "/wall/rightWall.png",
+            new Collider(22, 31, 0, 31),
+            1
+    );
 
-    public static final TETile INNER_PATH_RBC_WALL = new TETile(' ', Color.black, Color.black, "rbc inner path wall", prefix + "/wall/innerPathRBC.png", 1);
-    public static final TETile INNER_PATH_LBC_WALL = new TETile(' ', Color.black, Color.black, "lbc inner path wall", prefix + "/wall/innerPathLBC.png", 1);
-    public static final TETile INNER_PATH_LTC_WALL = new TETile(' ', Color.black, Color.black, "ltc inner path wall", prefix + "/wall/innerPathLTC.png", 1);
+    public static final TETile LBC_WALL = new TETile("lbc wall", prefix + "/wall/leftBottomCorner.png", 1);
+    public static final TETile RBC_WALL = new TETile("rbc wall", prefix + "/wall/rightBottomCorner.png", 1);
+    public static final TETile LTC_WALL = new TETile("ltc wall", prefix + "/wall/leftUpperCorner.png", 1);
+    public static final TETile RTC_WALL = new TETile("rtc wall", prefix + "/wall/rightUpperCorner.png", 1);
 
-    public static final TETile CORNER_PATH_LTC_WALL = new TETile(' ', Color.black, Color.black, "ltc inner path wall", prefix + "/wall/cornerPathLTC.png", 1);
+    public static final TETile LEFT_POLE = new TETile(
+            "left pole",
+            prefix + "/wall/leftPole.png",
+            new Collider(0, 4, 0, 31),
+            1
+    );
+    public static final TETile RIGHT_POLE = new TETile(
+            "right pole",
+            prefix + "/wall/rightPole.png",
+            new Collider(26, 31, 0, 31),
+            1
+    );
 
     public static final TETile FLOOR = new TETile('·', new Color(128, 192, 128), Color.black, "floor", 2);
 
-    public static final TETile NORMAL_FLOOR = new TETile(' ', Color.black, Color.black, "normal floor", prefix + "/floor/floor.png", 2);
+    public static final TETile NORMAL_FLOOR = new TETile("normal floor", prefix + "/floor/floor.png", 2);
 
     public static final TETile NOTHING = new TETile(' ', Color.black, Color.black, "nothing", 3);
     public static final TETile GRASS = new TETile('"', Color.green, Color.black, "grass", 4);

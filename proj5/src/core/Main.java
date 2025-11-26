@@ -41,8 +41,8 @@ public class Main {
                 }
             }
 
-            desiredCX = map.player.x - (VIEW_WIDTH / 2);
-            desiredCY = map.player.y - (VIEW_HEIGHT / 2);
+            desiredCX = map.player.snapX() - (VIEW_WIDTH / 2);
+            desiredCY = map.player.snapY() - (VIEW_HEIGHT / 2);
 
             actualCX = Math.min(Math.max(desiredCX, 0), WIDTH - VIEW_WIDTH);
             actualCY = Math.min(Math.max(desiredCY, 0), HEIGHT - VIEW_HEIGHT);
