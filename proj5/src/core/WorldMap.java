@@ -3,8 +3,11 @@ package core;
 import core.charecters.Characters;
 import core.charecters.Player;
 import core.charecters.Princess;
-import tileengine.Tileset;
 import utils.DS.*;
+import utils.DS.RecordLike.Edge;
+import utils.DS.RecordLike.Point;
+import utils.DS.TileContainers.Path;
+import utils.DS.TileContainers.Room;
 
 import java.util.*;
 
@@ -19,68 +22,90 @@ public class WorldMap {
     public Set<Characters> charactersSet;
 
     public WorldMap(long seed, int width, int height) {
+
+        boolean found = false;
+        int attempts = 1;
         Random random = new Random(seed);
-        charactersSet = new HashSet<>();
-        grid = new Grid(width, height);
 
-        this.width = width;
-        this.height = height;
+        while (!found) {
+            int MIN_ROOMS = (width * height) / (attempts < 250 ? 550 : 600);
 
-        List<Room> rooms = new ArrayList<>();
-        List<Edge> edges = new ArrayList<>();
+            try {
+                charactersSet = new HashSet<>();
+                grid = new Grid(width, height);
 
-        poissonRoomPlacement(rooms, 6, 10, 10, random);
-        euclideanMST(rooms, edges);
-        graph = new RoomGraph(rooms, random);
+                this.width = width;
+                this.height = height;
 
-        for (Room room: rooms) {
-            grid.add(room, false);
-        }
+                List<Room> rooms = new ArrayList<>();
+                List<Edge> edges = new ArrayList<>();
 
-        for (Edge edge: edges) {
-            Room r1 = edge.r1();
-            Room r2 = edge.r2();
+                poissonRoomPlacement(rooms, 6, 10, 10, random);
 
-            graph.connect(r1, r2);
-
-            double cost = Double.POSITIVE_INFINITY;
-            Point r1d = null;
-            Point r2d = null;
-
-            for (Point r1dC: r1.getDoorCands()) {
-                for (Point r2dC: r2.getDoorCands()) {
-                    if (cost > doorCost(r1dC, r2dC, r1.doors, r2.doors)) {
-                        r1d = r1dC;
-                        r2d = r2dC;
-                        cost = doorCost(r1dC, r2dC, r1.doors, r2.doors);
-                    }
+                if (rooms.size() < MIN_ROOMS && attempts < 500) {
+                    throw new RuntimeException("Insufficient rooms");
                 }
+
+                euclideanMST(rooms, edges);
+                graph = new RoomGraph(rooms, random);
+
+                for (Room room: rooms) {
+                    grid.add(room, true);
+                }
+
+                for (Edge edge: edges) {
+                    Room r1 = edge.r1();
+                    Room r2 = edge.r2();
+
+                    graph.connect(r1, r2);
+
+                    double cost = Double.POSITIVE_INFINITY;
+                    Point r1d = null;
+                    Point r2d = null;
+
+                    for (Point r1dC: r1.getDoorCands()) {
+                        for (Point r2dC: r2.getDoorCands()) {
+                            if (cost > doorCost(r1dC, r2dC, r1.doors, r2.doors)) {
+                                r1d = r1dC;
+                                r2d = r2dC;
+                                cost = doorCost(r1dC, r2dC, r1.doors, r2.doors);
+                            }
+                        }
+                    }
+
+                    // This throws if r1d / r2d is null
+                    r1.placeDoor(grid, r1d);
+                    r2.placeDoor(grid, r2d);
+
+                    grid.add(
+                            new Path(
+                                    r1,
+                                    grid.astar(r1d, r2d),
+                                    r2
+                            ),
+                            false
+                    );
+                }
+
+                graph.genDungeon(grid);
+                Room startRoom = graph.indToRoom.get(graph.start);
+                Room p1Room = graph.indToRoom.get(graph.p1);
+
+                player = new Player(startRoom.center.x, startRoom.center.y, grid, "player.png");
+                charactersSet.add(player);
+
+                Princess p1 = new Princess(p1Room.center.x, p1Room.center.y, grid, "p1.png");
+                charactersSet.add(p1);
+
+                found = true;
+            } catch (RuntimeException e) {
+                seed = random.nextLong();
+                random = new Random(seed);
+                attempts++;
             }
-
-            // This throws if r1d / r2d is null
-            r1.placeDoor(grid, r1d);
-            r2.placeDoor(grid, r2d);
-
-            grid.add(
-                    new Path(
-                            r1,
-                            grid.astar(r1d, r2d),
-                            r2,
-                            random
-                    ),
-                    true
-            );
         }
 
-        graph.genDungeon(grid);
-        Room startRoom = graph.indToRoom.get(graph.start);
-        Room p1Room = graph.indToRoom.get(graph.p1);
-
-        player = new Player(startRoom.center.x, startRoom.center.y, grid, "player.png");
-        charactersSet.add(player);
-
-        Princess p1 = new Princess(p1Room.center.x, p1Room.center.y, grid, "p1.png");
-        charactersSet.add(p1);
+        System.out.println("World built after surveying " + attempts + " others");
     }
 
     private void poissonRoomPlacement(List<Room> rooms, int minDim, int maxDim, int minCorridor, Random random) {
@@ -100,13 +125,13 @@ public class WorldMap {
         Point v;
         PSet localPoints;
 
-        candidateCenters = candidateCenters.filterM(p, R, false);
+        candidateCenters = candidateCenters.filterM(p, (int) (1.3 * R), false);
         activePoints.add(p);
         rooms.add(new Room(p, minDim, maxDim, random));
 
         while (!activePoints.isEmpty()) {
             p = activePoints.choose(random);
-            localPoints = candidateCenters.filterM(p, (int) (1.5 * R), true);
+            localPoints = candidateCenters.filterM(p, (int) (2.4 * R), true);
 
             if (localPoints.isEmpty()) {
                 activePoints.remove(p);
@@ -115,7 +140,7 @@ public class WorldMap {
                 v = localPoints.choose(random);
             }
 
-            candidateCenters = candidateCenters.filterM(v, R, false);
+            candidateCenters = candidateCenters.filterM(v, (int) (1.3 * R), false);
             activePoints.add(v);
             rooms.add(new Room(v, minDim, maxDim, random));
         }
@@ -172,7 +197,7 @@ public class WorldMap {
     }
 
     private double doorCost(Point p1, Point p2, PSet doors1, PSet doors2) {
-        double LAMBDA = 1;
+        double LAMBDA = 2;
 
         int spacing1 = 0;
         int spacing2 = 0;

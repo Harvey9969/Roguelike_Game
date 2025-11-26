@@ -3,14 +3,14 @@ package core;
 import core.charecters.Characters;
 import edu.princeton.cs.algs4.StdDraw;
 import tileengine.TERenderer;
-import utils.DS.Point;
+import utils.DS.RecordLike.Point;
 
 public class Main {
-    private static final int WIDTH = 200;
-    private static final int HEIGHT = 200;
+    private static final int WIDTH = 150;
+    private static final int HEIGHT = 150;
 
-    private static final int VIEW_WIDTH = 25;
-    private static final int VIEW_HEIGHT = 15;
+    private static final int VIEW_WIDTH = 50;
+    private static final int VIEW_HEIGHT = 30;
 
     private static final int MILLISEC_PER_FRAME = 1000 / 60;
 

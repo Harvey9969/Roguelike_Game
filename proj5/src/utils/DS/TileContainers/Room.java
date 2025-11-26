@@ -1,32 +1,34 @@
-package utils.DS;
+package utils.DS.TileContainers;
 
-import tileengine.TETile;
 import tileengine.Tileset;
+import utils.DS.Grid;
+import utils.DS.PSet;
+import utils.DS.RecordLike.Point;
+import utils.DS.RecordLike.Tile;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
 
 public class Room extends TSet {
     private class WallNode {
         public WallNode prev;
-        public Point point;
+        public Tile tile;
         public WallNode next;
 
-        WallNode(WallNode prev, Point point, WallNode next) {
+        WallNode(WallNode prev, Tile tile, WallNode next) {
             this.prev = prev;
-            this.point = point;
+            this.tile = tile;
             this.next = next;
         }
 
-        WallNode(Point point) {
-            this.point = point;
+        WallNode(Tile tile) {
+            this.tile = tile;
             this.prev = this;
             this.next = this;
         }
 
-        WallNode add(Point point) {
-            WallNode newNode = new WallNode(this, point, this.next);
+        WallNode add(Tile tile) {
+            WallNode newNode = new WallNode(this, tile, this.next);
             this.next.prev = newNode;
             this.next = newNode;
 
@@ -51,7 +53,6 @@ public class Room extends TSet {
     public final PSet doors;
 
     public Room(Point center, int min, int max, Random random) {
-        super(random);
         this.center = center;
 
         genStarts(min, max, random);
@@ -70,26 +71,43 @@ public class Room extends TSet {
             }
         }
 
-        wallTiles = new WallNode(new Point(xStart, yStart));
+        // LBC
+        wallTiles = new WallNode(new Tile(new Point(xStart, yStart), Tileset.LBC_WALL));
         wallTileSize++;
 
-        for (int x = xStart + 1; x <= xStop; x++) {
-            wallTiles = wallTiles.add(new Point(x, yStart));
+        // bottom
+        for (int x = xStart + 1; x < xStop; x++) {
+            wallTiles = wallTiles.add(new Tile(new Point(x, yStart), Tileset.BOTTOM_WALL));
             wallTileSize++;
         }
 
-        for (int y = yStart + 1; y <= yStop; y++) {
-            wallTiles = wallTiles.add(new Point(xStop, y));
+        // RBC
+        wallTiles = wallTiles.add(new Tile(new Point(xStop, yStart), Tileset.RBC_WALL));
+        wallTileSize++;
+
+        // right
+        for (int y = yStart + 1; y < yStop; y++) {
+            wallTiles = wallTiles.add(new Tile(new Point(xStop, y), Tileset.RIGHT_WALL));
             wallTileSize++;
         }
 
-        for (int x = xStop - 1; x >= xStart; x--) {
-            wallTiles = wallTiles.add(new Point(x, yStop));
+        // RTC
+        wallTiles = wallTiles.add(new Tile(new Point(xStop, yStop), Tileset.RTC_WALL));
+        wallTileSize++;
+
+        // top
+        for (int x = xStop - 1; x > xStart; x--) {
+            wallTiles = wallTiles.add(new Tile(new Point(x, yStop), Tileset.UPPER_WALL));
             wallTileSize++;
         }
 
+        // LTC
+        wallTiles = wallTiles.add(new Tile(new Point(xStart, yStop), Tileset.LTC_WALL));
+        wallTileSize++;
+
+        // left
         for (int y = yStop - 1; y > yStart; y--) {
-            wallTiles = wallTiles.add(new Point(xStart, y));
+            wallTiles = wallTiles.add(new Tile(new Point(xStart, y), Tileset.LEFT_WALL));
             wallTileSize++;
         }
     }
@@ -155,14 +173,14 @@ public class Room extends TSet {
 
         for (WallNode node: wallIter()) {
             if (
-                    (xCorners.contains(node.point.x) && yCorners.contains(node.point.y))
-                    || (xCorners.contains(node.prev.point.x) && yCorners.contains(node.prev.point.y))
-                    || (xCorners.contains(node.next.point.x) && yCorners.contains(node.next.point.y))
+                    (xCorners.contains(node.tile.point().x) && yCorners.contains(node.tile.point().y))
+                    || (xCorners.contains(node.prev.tile.point().x) && yCorners.contains(node.prev.tile.point().y))
+                    || (xCorners.contains(node.next.tile.point().x) && yCorners.contains(node.next.tile.point().y))
             ) {
                 continue;
             }
 
-            result.add(node.point);
+            result.add(node.tile.point());
         }
 
         return result;
@@ -177,16 +195,16 @@ public class Room extends TSet {
             throw new IllegalArgumentException("Only valid door candidates can be placed");
         }
 
-        while (!wallTiles.next.next.point.equals(door)) {
+        while (!wallTiles.next.next.tile.point().equals(door)) {
             wallTiles = wallTiles.next;
         }
 
-        grid.set(new Tile(wallTiles.next.point, Tileset.NOTHING));
+        grid.set(new Tile(wallTiles.next.tile.point(), Tileset.NOTHING));
 
-        grid.set(new Tile(wallTiles.next.next.point, Tileset.NOTHING));
-        doors.add(wallTiles.next.next.point);
+        grid.set(new Tile(wallTiles.next.next.tile.point(), Tileset.NOTHING));
+        doors.add(wallTiles.next.next.tile.point());
 
-        grid.set(new Tile(wallTiles.next.next.next.point, Tileset.NOTHING));
+        grid.set(new Tile(wallTiles.next.next.next.tile.point(), Tileset.NOTHING));
 
         wallTiles.next = wallTiles.next.next.next.next;
         wallTiles.next.prev = wallTiles;
@@ -195,11 +213,11 @@ public class Room extends TSet {
     }
 
     @Override
-    public Iterable<Point> getWallTiles() {
-        return new Iterable<Point>() {
+    public Iterable<Tile> getWallTiles() {
+        return new Iterable<Tile>() {
             @Override
-            public Iterator<Point> iterator() {
-                return new Iterator<Point>() {
+            public Iterator<Tile> iterator() {
+                return new Iterator<Tile>() {
                     final Iterator<WallNode> nodeIterator = wallIter().iterator();
 
                     @Override
@@ -208,8 +226,8 @@ public class Room extends TSet {
                     }
 
                     @Override
-                    public Point next() {
-                        return nodeIterator.next().point;
+                    public Tile next() {
+                        return nodeIterator.next().tile;
                     }
                 };
             }

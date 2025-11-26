@@ -1,4 +1,4 @@
-package utils.DS;
+package utils.DS.RecordLike;
 
 import tileengine.TETile;
 

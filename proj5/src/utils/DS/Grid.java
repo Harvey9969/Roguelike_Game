@@ -2,15 +2,71 @@ package utils.DS;
 
 import tileengine.TETile;
 import tileengine.Tileset;
+import utils.DS.RecordLike.Dir;
+import utils.DS.RecordLike.Point;
+import utils.DS.RecordLike.Tile;
 
 import java.util.*;
 
 public class Grid {
+    private final int SCRAPING_COST = 10;
+    private final int TURN_COST = 5;
+
+    private final int STRAIGHT_COST_SHORT = 1;
+    private final int STRAIGHT_COST_LONG = 2;
+
+    private final int STRAIGHT_BURST = 4;
+
     int width;
     int height;
-    int xOffset;
-    int yOffset;
     TETile[][] tiles;
+
+    private class State implements Comparable<State> {
+        Dir dir;
+        Point loc;
+        double priority;
+        int streak;
+
+        State(Dir dir, Point loc, double priority, int streak) {
+            this.dir = dir;
+            this.loc = loc;
+            this.priority = priority;
+            this.streak = Math.min(streak, STRAIGHT_BURST);
+        }
+
+        public void setPriority(double priority) {
+            this.priority = priority;
+        }
+
+        public void setStreak(int streak) {
+            this.streak = Math.min(streak, STRAIGHT_BURST);
+        }
+
+        @Override
+        public int hashCode() {
+           return
+                   2 * dir.hashCode()
+                   + 3 * loc.hashCode()
+                   + 5 * streak;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof State uddaState) {
+                return
+                        uddaState.dir.equals(dir)
+                        && uddaState.loc.equals(loc)
+                        && uddaState.streak == streak;
+            }
+
+            return false;
+        }
+
+        @Override
+        public int compareTo(State uddaState) {
+            return Double.compare(priority, uddaState.priority);
+        }
+    }
 
     public Grid(int width, int height) {
         validateDimension(width, height);
@@ -27,32 +83,19 @@ public class Grid {
         }
     }
 
-    public Grid(Grid parent, Point bottomLeft, int width, int height) {
-        validateDimension(width, height);
-        validateContainment(bottomLeft, parent.width, parent.height, width, height);
-
-        this.width = width;
-        this.height = height;
-
-        tiles = parent.tiles;
-
-        xOffset = bottomLeft.x;
-        yOffset = bottomLeft.y;
-    }
-
     public void set(Tile tile) {
         int lx = tile.point().x ;
         int ly = tile.point().y;
 
         validateInBounds(lx, ly);
 
-        tiles[lx + xOffset][ly + yOffset] = tile.tileType();
+        tiles[lx][ly] = tile.tileType();
     }
 
     public TETile get(int x, int y) {
         validateInBounds(x, y);
 
-        return tiles[x + xOffset][y + yOffset];
+        return tiles[x][y];
     }
 
     public TETile get(Point p) {
@@ -79,21 +122,6 @@ public class Grid {
                     ));
                 }
             }
-        }
-    }
-
-    public void add(TETile[][] uddaTiles) {
-        if (
-                uddaTiles.length == width
-                && uddaTiles[0].length == height
-        ) {
-            for (int x = 0; x < width; x++) {
-                for (int y = 0; y < height; y++) {
-                    set(new Tile(new Point(x,y), uddaTiles[x][y]));
-                }
-            }
-        } else {
-            throw new IllegalArgumentException("Tile frames must match");
         }
     }
 
@@ -125,158 +153,161 @@ public class Grid {
     }
 
     public List<Point> astar(Point start, Point end) {
-        final int TURN_COST = 5;
-
-        final int STRAIGHT_COST_SHORT = 1;
-        final int STRAIGHT_COST_LONG = 4;
-
-        final int STRAIGHT_BURST = 3;
-
         validateInBounds(start.x, start.y);
         validateInBounds(end.x, end.y);
+
         if (start.equals(end)) {
             throw new IllegalArgumentException("Start cannot equal end");
         }
 
-        record PQNode(double dist, Point loc) {}
-        record adjNode(char dir, Point loc) {}
-        PriorityQueue<PQNode> fringe = new PriorityQueue<>(new Comparator<PQNode>() {
-            @Override
-            public int compare(PQNode o1, PQNode o2) {
-                return Double.compare(o1.dist, o2.dist);
-            }
-        });
+        State startState = new State(Dir.BLANK, start, 0, 0);
 
-        HashMap<Point, Integer> distTo = new HashMap<>();
-        HashMap<Point, Point> edgeTo = new HashMap<>();
-        HashMap<Point, Character> directionTo = new HashMap<>();
-        HashMap<Point, Integer> straightStreak = new HashMap<>();
-        HashSet<Point> visited = new HashSet<>();
+        PriorityQueue<State> fringe = new PriorityQueue<>();
+        HashMap<State, Integer> distTo = new HashMap<>(); // no heuristic
+        HashMap<State, State> edgeTo = new HashMap<>();
 
-        fringe.add(new PQNode(0, start));
-        distTo.put(start, 0);
-        edgeTo.put(start, null);
-        directionTo.put(start, ' ');
-        straightStreak.put(start, 0);
+        fringe.add(startState);
+        distTo.put(startState, 0);
+        edgeTo.put(startState, null);
 
-        int cost;
-        PQNode node;
+        HashSet<State> visited = new HashSet<>();
+
+        State node = null;
         boolean pathFound = false;
 
         while (!fringe.isEmpty()) {
             node = fringe.poll();
-            visited.add(node.loc);
+
+            if (distTo.get(node) == null) {
+                continue;
+            }
+
+            visited.add(node);
 
             if (node.loc.equals(end)) {
                 pathFound = true;
                 break;
             }
 
-            List<adjNode> neighbors = new ArrayList<>();
-
-            if (node.loc.x - 1 >= 0) {
-                neighbors.add(new adjNode('W', node.loc.left()));
-            }
-
-            if (node.loc.x + 1 < width) {
-                neighbors.add(new adjNode('E', node.loc.right()));
-            }
-
-            if (node.loc.y - 1 >= 0) {
-                neighbors.add(new adjNode('S', node.loc.down()));
-            }
-
-            if (node.loc.y + 1 < height) {
-                neighbors.add(new adjNode('N', node.loc.up()));
-            }
-
-            for (adjNode adj: neighbors) {
-                Point point = adj.loc;
-                char dir = adj.dir;
-
-                if (visited.contains(point) || !isVisitable(point)) {
+            for (
+                    State adj: // dummy priorities & streaks
+                    neighbors(node)
+            ) {
+                if (visited.contains(adj) || !isVisitable(adj.loc, start, end)) {
                     continue;
                 }
 
-                int ss = straightStreak.get(node.loc);
+                boolean straight = node.dir.equals(adj.dir);
+                int stepCost = cost(adj, node.streak, straight);
+                adj.setStreak(straight ? node.streak + 1 : 0);
 
-                if (isScraping(dir, point)) {
-                    cost = 10;
-                } else if (dir == directionTo.get(node.loc) && ss <= STRAIGHT_BURST) {
-                    cost = STRAIGHT_COST_SHORT;
-                    ss++;
-                } else if (dir == directionTo.get(node.loc)) {
-                    cost = STRAIGHT_COST_LONG;
-                    ss++;
-                } else {
-                    cost = TURN_COST;
-                    ss = 0;
+                if (
+                        !distTo.containsKey(adj)
+                        || distTo.get(adj) > distTo.get(node) + stepCost
+                ) {
+                    distTo.put(adj, distTo.get(node) + stepCost);
+                    edgeTo.put(adj, node);
+
+                    fringe.removeIf(pqNode -> pqNode.equals(adj));
+
+                    adj.setPriority(distTo.get(node) + stepCost + adj.loc.eDist(end));
+                    fringe.add(adj);
                 }
-
-                if (!distTo.containsKey(point)) {
-                    distTo.put(point, distTo.get(node.loc) + cost);
-                    edgeTo.put(point, node.loc);
-                    straightStreak.put(point, ss);
-                    directionTo.put(point, dir);
-
-                    fringe.add(new PQNode(
-                            distTo.get(point) + point.eDist(end),
-                            point
-                    ));
-                } else if (distTo.get(point) > distTo.get(node.loc) + cost) {
-                    distTo.put(point, distTo.get(node.loc) + cost);
-                    edgeTo.put(point, node.loc);
-                    straightStreak.put(point, ss);
-                    directionTo.put(point, dir);
-
-                    Point finalPoint = point;
-                    fringe.removeIf(pqNode -> pqNode.loc.equals(finalPoint));
-                    fringe.add(new PQNode(
-                            distTo.get(point) + point.eDist(end),
-                            point
-                    ));
-                }
-                }
+            }
 
         }
 
         if (!pathFound) {
             throw new RuntimeException("Path could not be found");
         }
-
-        Point visitor = end;
+        
+        // node is now the end state
         LinkedList<Point> path = new LinkedList<>();
-        while (visitor != null) {
-            path.addFirst(visitor);
-            visitor = edgeTo.get(visitor);
+        while (node != null) {
+            path.addFirst(node.loc);
+            node = edgeTo.get(node);
         }
 
         return path;
     }
 
-    private boolean isScraping(char dir, Point point) {
+    private Iterable<State> neighbors(State node) {
+        List<State> neighbors = new ArrayList<>();
+
+        if (node.loc.x - 1 >= 0) {
+            neighbors.add(new State(
+                    Dir.WEST,
+                    node.loc.left(),
+                    Double.POSITIVE_INFINITY,
+                    Integer.MAX_VALUE
+            ));
+        }
+
+        if (node.loc.x + 1 < width) {
+            neighbors.add(new State(
+                    Dir.EAST,
+                    node.loc.right(),
+                    Double.POSITIVE_INFINITY,
+                    Integer.MAX_VALUE
+            ));
+        }
+
+        if (node.loc.y - 1 >= 0) {
+            neighbors.add(new State(
+                    Dir.SOUTH,
+                    node.loc.down(),
+                    Double.POSITIVE_INFINITY,
+                    Integer.MAX_VALUE
+            ));
+        }
+
+        if (node.loc.y + 1 < height) {
+            neighbors.add(new State(
+                    Dir.NORTH,
+                    node.loc.up(),
+                    Double.POSITIVE_INFINITY,
+                    Integer.MAX_VALUE
+            ));
+        }
+
+        return neighbors;
+    }
+
+    private int cost(State node, int parentSS, boolean straight) {
+        if (isScraping(node.dir, node.loc)) {
+            return SCRAPING_COST;
+        } else if (straight && parentSS < STRAIGHT_BURST) {
+            return STRAIGHT_COST_SHORT;
+        } else if (straight) {
+            return STRAIGHT_COST_LONG;
+        } else {
+            return TURN_COST;
+        }
+    }
+
+    private boolean isScraping(Dir dir, Point point) {
         int x = point.x;
         int y = point.y;
 
-        if (dir == 'N') {
+        if (dir.isNorth()) {
             return
                     (isInBounds(x - 2, y) && get(x - 2, y).equals(Tileset.WALL))
                     || (isInBounds(x - 2, y + 1) && get(x - 2, y + 1).equals(Tileset.WALL))
                     || (isInBounds(x + 2, y) && get(x + 2, y).equals(Tileset.WALL))
                     || (isInBounds(x + 2, y + 1) && get(x + 2, y + 1).equals(Tileset.WALL));
-        } else if (dir == 'E') {
+        } else if (dir.isEast()) {
             return
                     (isInBounds(x, y - 2) && get(x, y - 2).equals(Tileset.WALL))
                     || (isInBounds(x + 1, y - 2) && get(x + 1, y - 2).equals(Tileset.WALL))
                     || (isInBounds(x, y + 2) && get(x, y + 2).equals(Tileset.WALL))
                     || (isInBounds(x + 1, y + 2) && get(x + 1, y + 2).equals(Tileset.WALL));
-        } else if (dir == 'S') {
+        } else if (dir.isSouth()) {
             return
                     (isInBounds(x - 2, y) && get(x - 2, y).equals(Tileset.WALL))
                     || (isInBounds(x - 2, y - 1) && get(x - 2, y - 1).equals(Tileset.WALL))
                     || (isInBounds(x + 2, y) && get(x + 2, y).equals(Tileset.WALL))
                     || (isInBounds(x + 2, y - 1) && get(x + 2, y - 1).equals(Tileset.WALL));
-        } else if (dir == 'W') {
+        } else if (dir.isWest()) {
             return
                     (isInBounds(x, y - 2) && get(x, y - 2).equals(Tileset.WALL))
                     || (isInBounds(x - 1, y - 2) && get(x - 1, y - 2).equals(Tileset.WALL))
@@ -287,21 +318,28 @@ public class Grid {
         return false;
     }
 
-    private boolean isVisitable(Point point) {
+    private boolean isVisitable(Point point, Point start, Point end) {
         int startX = point.x - 1;
         int stopX = point.x + 1;
         int startY = point.y - 1;
         int stopY = point.y + 1;
 
+        boolean liminal = point.equals(start) || point.equals(end);
+
         for (int x = startX; x <= stopX; x++) {
             for (int y = startY; y <= stopY; y++) {
-                if (
-                        x == 0
-                        || x == width - 1
-                        || y == 0
-                        || y == height - 1
-                        || get(x, y).equals(Tileset.WALL)
-                ) {
+                if (!isInBounds(x, y)) {
+                    return false;
+                }
+
+                if (x == 0 || x == width - 1 || y == 0 || y == height - 1) {
+                    return false;
+                }
+
+                if (!get(x, y).equals(Tileset.NOTHING)) {
+                    if (liminal && get(x, y).equals(Tileset.FLOOR)) {
+                        continue;
+                    }
                     return false;
                 }
             }
