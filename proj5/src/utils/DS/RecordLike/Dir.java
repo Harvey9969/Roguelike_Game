@@ -59,4 +59,16 @@ public class Dir {
             default -> throw new IllegalStateException("Unexpected value: " + val);
         };
     }
+
+    @Override
+    public String toString() {
+        return switch (val) {
+            case 'N' -> "NORTH";
+            case 'E' -> "EAST";
+            case 'S' -> "SOUTH";
+            case 'W' -> "WEST";
+            case ' ' -> "BLANK";
+            default -> throw new IllegalStateException("Unexpected value: " + val);
+        };
+    }
 }

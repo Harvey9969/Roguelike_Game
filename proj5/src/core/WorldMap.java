@@ -91,11 +91,11 @@ public class WorldMap {
                 Room startRoom = graph.indToRoom.get(graph.start);
                 Room p1Room = graph.indToRoom.get(graph.p1);
 
-                player = new Player(startRoom.center.x, startRoom.center.y, grid, "player.png");
+                player = new Player(startRoom.center.x, startRoom.center.y, grid, "player");
                 charactersSet.add(player);
 
-                Princess p1 = new Princess(p1Room.center.x, p1Room.center.y, grid, "p1.png");
-                charactersSet.add(p1);
+//                Princess p1 = new Princess(p1Room.center.x, p1Room.center.y, grid, "p1.png");
+//                charactersSet.add(p1);
 
                 found = true;
             } catch (RuntimeException e) {

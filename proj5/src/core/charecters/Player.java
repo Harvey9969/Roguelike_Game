@@ -3,8 +3,8 @@ package core.charecters;
 import utils.DS.Grid;
 
 public class Player extends Characters {
-    public Player(int x, int y, Grid grid, String sprite) {
-        super(x, y, grid, sprite);
+    public Player(int x, int y, Grid grid, String playerFolder) {
+        super(x, y, grid, playerFolder);
     }
 
     @Override
@@ -21,7 +21,8 @@ public class Player extends Characters {
     }
 
     @Override
-    public void tick() {
+    public void act() {
         throw new UnsupportedOperationException();
     }
+
 }

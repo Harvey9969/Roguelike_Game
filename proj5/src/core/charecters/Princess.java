@@ -13,7 +13,9 @@ public class Princess extends Characters{
     }
 
     @Override
-    public void tick() {
+    public void act() {
         return;
     }
+
+
 }

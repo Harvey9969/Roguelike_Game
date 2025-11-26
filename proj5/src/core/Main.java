@@ -36,9 +36,7 @@ public class Main {
             }
 
             for (Characters c: map.charactersSet) {
-                if (c != map.player) {
-                    c.tick();
-                }
+                c.tick(c != map.player);
             }
 
             desiredCX = map.player.snapX() - (VIEW_WIDTH / 2);
