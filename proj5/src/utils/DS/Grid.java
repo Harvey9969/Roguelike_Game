@@ -375,4 +375,8 @@ public class Grid {
                 && x < width
                 && y < height;
     }
+
+    public boolean isInBounds(Point point) {
+        return isInBounds(point.x, point.y);
+    }
 }

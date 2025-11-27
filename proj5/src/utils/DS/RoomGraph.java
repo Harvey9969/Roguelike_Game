@@ -1,14 +1,20 @@
 package utils.DS;
 
+import edu.princeton.cs.algs4.Stack;
 import utils.DS.TileContainers.Room;
 
 import java.util.*;
 
 public class RoomGraph {
+    public enum Place { START, MIDDLE, END }
+    public record PartitionNode(int room, Place place) {}
+
     public final Map<Room, Integer> roomToInd;
     public final Map<Integer, Room> indToRoom;
     private final Set<Integer>[] adjacencyList;
     private final int numRooms;
+
+    private boolean madeDungeon;
 
     public int start;
     public int p1;
@@ -75,6 +81,7 @@ public class RoomGraph {
     }
 
     public void genDungeon(Grid grid) {
+        madeDungeon = true;
         nrooms = new HashSet<>();
 
         start = longestFrom(random.nextInt(numRooms)).getLast();
@@ -125,6 +132,51 @@ public class RoomGraph {
                 nrooms.add(i);
             }
         }
+    }
+
+    public Set<PartitionNode> princessPartition() {
+        if (!madeDungeon) {
+            throw new IllegalStateException("Cannot partition non-dungeon graph");
+        }
+
+        Set<PartitionNode> result = new HashSet<>();
+
+        int[] parent = new int[numRooms];
+        Set<Integer> visited = new HashSet<>();
+
+        Stack<PartitionNode> dfs = new Stack<>();
+        parent[start] = -1;
+        dfs.push(new PartitionNode(start, Place.START));
+
+        while (!dfs.isEmpty()) {
+            PartitionNode node = dfs.pop();
+
+            int room = node.room;
+            Place place = node.place;
+
+            if (!visited.add(room)) {
+                throw new IllegalStateException("Cannot partition cyclic graph");
+            }
+
+            if (room == p1) {
+                place = Place.MIDDLE;
+            } else if (room == p2) {
+                place = Place.END;
+            } else if (room != start && room != end) {
+                result.add(node);
+            }
+
+            for (int neighbor: adj(room)) {
+                PartitionNode newNode = new PartitionNode(neighbor, place);
+
+                if (neighbor != parent[room]) {
+                    parent[neighbor] = room;
+                    dfs.push(newNode);
+                }
+            }
+        }
+
+        return result;
     }
 
     private List<Integer> longestFrom(int u) {

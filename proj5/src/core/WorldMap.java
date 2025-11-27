@@ -1,8 +1,5 @@
 package core;
 
-import core.charecters.Characters;
-import core.charecters.Player;
-import core.charecters.Princess;
 import utils.DS.*;
 import utils.DS.RecordLike.Edge;
 import utils.DS.RecordLike.Point;
@@ -18,9 +15,6 @@ public class WorldMap {
     public int width;
     public int height;
 
-    public Player player;
-    public Set<Characters> charactersSet;
-
     public WorldMap(long seed, int width, int height) {
 
         boolean found = false;
@@ -31,7 +25,6 @@ public class WorldMap {
             int MIN_ROOMS = (width * height) / (attempts < 250 ? 550 : 600);
 
             try {
-                charactersSet = new HashSet<>();
                 grid = new Grid(width, height);
 
                 this.width = width;
@@ -86,16 +79,6 @@ public class WorldMap {
                             false
                     );
                 }
-
-                graph.genDungeon(grid);
-                Room startRoom = graph.indToRoom.get(graph.start);
-                Room p1Room = graph.indToRoom.get(graph.p1);
-
-                player = new Player(startRoom.center.x, startRoom.center.y, grid, "player");
-                charactersSet.add(player);
-
-//                Princess p1 = new Princess(p1Room.center.x, p1Room.center.y, grid, "p1.png");
-//                charactersSet.add(p1);
 
                 found = true;
             } catch (RuntimeException e) {

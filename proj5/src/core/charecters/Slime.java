@@ -1,0 +1,30 @@
+package core.charecters;
+
+import core.EntityManager;
+import utils.DS.Grid;
+import utils.DS.RecordLike.Dir;
+
+import java.util.Random;
+
+public class Slime extends Combatant{
+    Random random;
+
+    public Slime(double x, double y, Grid grid, EntityManager manager, Random random) {
+        super(x, y, grid, "slime", manager, 2, 0);
+        this.random = random;
+    }
+
+    @Override
+    public void _respond(char key) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void _act() {
+        Dir dir = Dir.choose(random);
+
+        if (random.nextBoolean() && canMove(dir)) {
+            move(dir);
+        }
+    }
+}

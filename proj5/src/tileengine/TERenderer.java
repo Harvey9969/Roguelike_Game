@@ -1,7 +1,8 @@
 package tileengine;
 
-import core.charecters.Characters;
+import core.charecters.GameCharacter;
 import edu.princeton.cs.algs4.StdDraw;
+import utils.DS.RecordLike.Point;
 
 import java.awt.Color;
 import java.awt.Font;
@@ -90,10 +91,10 @@ public class TERenderer {
         StdDraw.show();
     }
 
-    public void renderFrame(TETile[][] world, Iterable<Characters> characters, int cameraX, int cameraY) {
+    public void renderFrame(TETile[][] world, Iterable<GameCharacter> characters, Point camera) {
         StdDraw.clear(new Color(0, 0, 0));
         drawTiles(world, false);
-        drawCharacters(characters, cameraX, cameraY);
+        drawCharacters(characters, camera.x, camera.y);
         drawTiles(world, true);
         StdDraw.show();
     }
@@ -127,8 +128,8 @@ public class TERenderer {
      * Draws all the characters in the Iterable.
      * @param characters the Iterable of characters to render
      */
-    public void drawCharacters(Iterable<Characters> characters, int cameraX, int cameraY) {
-        for (Characters c: characters) {
+    public void drawCharacters(Iterable<GameCharacter> characters, int cameraX, int cameraY) {
+        for (GameCharacter c: characters) {
             c.draw(cameraX, cameraY);
         }
     }

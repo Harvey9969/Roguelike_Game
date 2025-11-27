@@ -1,6 +1,7 @@
 package utils.DS.RecordLike;
 
 import java.util.List;
+import java.util.Random;
 
 public class Dir {
     public static final Dir NORTH = new Dir('N');
@@ -33,6 +34,27 @@ public class Dir {
 
     public boolean isWest() {
         return val == 'W';
+    }
+    
+    public static Dir choose(Random random) {
+        return switch (random.nextInt(4)) {
+            case 0 -> Dir.NORTH;
+            case 1 -> Dir.EAST;
+            case 2 -> Dir.SOUTH;
+            case 3 -> Dir.WEST;
+            default -> throw new IllegalStateException("Unexpected value");
+        };
+    }
+
+    public Dir opposite() {
+        return switch (val) {
+            case 'N' -> Dir.SOUTH;
+            case 'E' -> Dir.WEST;
+            case 'S' -> Dir.NORTH;
+            case 'W' -> Dir.EAST;
+            case ' ' -> Dir.BLANK;
+            default -> throw new IllegalStateException("Unexpected value: " + val);
+        };
     }
 
     @Override

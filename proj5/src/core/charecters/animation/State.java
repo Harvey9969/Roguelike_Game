@@ -1,4 +1,4 @@
-package tileengine;
+package core.charecters.animation;
 
 import utils.DS.RecordLike.Dir;
 
@@ -60,28 +60,60 @@ public class State {
         }
     }
 
-    public void setState(String relPos, Dir facing) {
-        if (!frameNums.containsKey(facing.toString() + "_" + relPos)) {
-            throw new IllegalArgumentException("Positions must correspond to sprite folders");
-        }
-
-        if (facing.equals(Dir.BLANK)) {
-            throw new IllegalArgumentException("Cannot be facing blank direction");
-        }
+    public void loop(String relPos, Dir facing) {
+        checkState(relPos, facing);
 
         if (!facing.equals(this.facing) || !relPos.equals(this.relPos)) {
             frameInd = 0;
         } else {
-            frameInd = (frameInd + 1) % frameNums.get(facing + "_" + relPos);
+            frameInd = (frameInd + 1) % frameNums.get(key());
         }
 
         this.relPos = relPos;
         this.facing = facing;
     }
 
+    public boolean playthrough(boolean cycle, String relPos, Dir facing) {
+        checkState(relPos, facing);
+
+        boolean unfinished = true;
+
+        if (!facing.equals(this.facing) || !relPos.equals(this.relPos)) {
+            frameInd = 0;
+        } else {
+            frameInd = (frameInd + 1) % frameNums.get(key());
+
+            if (
+                    (frameInd == 0 && cycle)
+                    || (frameInd == frameNums.get(key()) - 1 && !cycle)
+            ) {
+                unfinished = false;
+            }
+        }
+
+        this.relPos = relPos;
+        this.facing = facing;
+
+        return unfinished;
+    }
+
     public String getSpriteFile() {
         return
                 spritePath + "/" +
                 String.format("%s/%s/%d.png", facing, relPos, frameInd);
+    }
+
+    private String key() {
+        return facing + "_" + relPos;
+    }
+
+    private void checkState(String relPos, Dir facing) {
+        if (!frameNums.containsKey(facing.toString() + "_" + relPos)) {
+            throw new IllegalArgumentException(
+                    "Positions must correspond to sprite folders, "
+                    + facing.toString() + "_" + relPos
+                    + " does not for " + spritePath
+            );
+        }
     }
 }

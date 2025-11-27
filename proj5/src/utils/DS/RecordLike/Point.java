@@ -37,6 +37,20 @@ public class Point {
         return new Point(x, y - 1);
     }
 
+    public Point move(Dir dir) {
+        if (dir.isNorth()) {
+            return up();
+        } else if (dir.isEast()) {
+            return right();
+        } else if (dir.isSouth()) {
+            return down();
+        } else if (dir.isWest()) {
+            return left();
+        } else {
+            throw new IllegalArgumentException("Cannot move to blank");
+        }
+    }
+
     @Override
     public int hashCode() {
         return 31 * x + y;

@@ -1,5 +1,11 @@
 package utils;
 
+import utils.DS.TileContainers.Room;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -359,6 +365,32 @@ public class RandomUtils {
             a[i] = a[r];
             a[r] = temp;
         }
+    }
+
+    public static List<Room> chooseRooms(Random random, List<Room> a, int k) {
+        validateNotNull(a);
+
+        if (k >= a.size()) {
+            throw new IllegalArgumentException("Cannot choose more items than available");
+        }
+
+        List<Room> result = new ArrayList<>();
+        Object[] inclusion = new Object[a.size()];
+        Arrays.fill(inclusion, false);
+
+        for (int i = 0; i < k; i++) {
+            inclusion[i] = true;
+        }
+
+        shuffle(random, inclusion);
+
+        for (int i = 0; i < a.size(); i++) {
+            if ((boolean) inclusion[i]) {
+                result.add(a.get(i));
+            }
+        }
+
+        return result;
     }
 
     /**
