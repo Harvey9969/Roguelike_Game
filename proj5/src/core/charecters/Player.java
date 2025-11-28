@@ -13,13 +13,13 @@ public class Player extends Combatant {
 
     @Override
     public void _respond(char key) {
-        if (key == 'w' && canMove(Dir.NORTH)) {
+        if ((key == 'w' || key == 'W') && canMove(Dir.NORTH)) {
             move(Dir.NORTH);
-        } else if (key == 'a' && canMove(Dir.WEST)) {
+        } else if ((key == 'a' || key == 'A') && canMove(Dir.WEST)) {
             move(Dir.WEST);
-        } else if (key == 's' && canMove(Dir.SOUTH)) {
+        } else if ((key == 's' || key == 'S') && canMove(Dir.SOUTH)) {
             move(Dir.SOUTH);
-        } else if (key == 'd' && canMove(Dir.EAST)) {
+        } else if ((key == 'd' || key == 'D') && canMove(Dir.EAST)) {
             move(Dir.EAST);
         } else if (key == ' ') {
             relPos = Actions.ATTACK;
