@@ -15,6 +15,8 @@ public class EntityManager {
     private Grid grid;
     private Random random;
 
+    private Set<Point> princessTiles;
+
     public Set<GameCharacter> charactersSet;
     public Player player;
 
@@ -22,6 +24,8 @@ public class EntityManager {
         this.graph = graph;
         this.grid = grid;
         this.random = random;
+
+        princessTiles = new HashSet<>();
         charactersSet = new HashSet<>();
 
         graph.genDungeon(grid);
@@ -30,6 +34,18 @@ public class EntityManager {
         Room p1Room = graph.indToRoom.get(graph.p1);
         Room p2Room = graph.indToRoom.get(graph.p2);
         Room p3Room = graph.indToRoom.get(graph.end);
+
+        for (Point p: p1Room.getFloorTiles()) {
+            princessTiles.add(p);
+        }
+
+        for (Point p: p2Room.getFloorTiles()) {
+            princessTiles.add(p);
+        }
+
+        for (Point p: p3Room.getFloorTiles()) {
+            princessTiles.add(p);
+        }
 
         player = new Player(startRoom.center.x, startRoom.center.y, grid,  this);
         charactersSet.add(player);
@@ -68,6 +84,10 @@ public class EntityManager {
             );
         }
 
+    }
+
+    public boolean isPrincessTile(Point point) {
+        return princessTiles.contains(point);
     }
 
     public void tickAll() {

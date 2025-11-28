@@ -59,4 +59,11 @@ public class Enemy extends Combatant {
     private Point getTargetPos() {
         return new Point(target.snapX(), target.snapY());
     }
+
+    @Override
+    public boolean canMove(Dir dir) {
+        return
+                !manager.isPrincessTile(new Point(snapX(), snapY()).move(dir))
+                && super.canMove(dir);
+    }
 }
