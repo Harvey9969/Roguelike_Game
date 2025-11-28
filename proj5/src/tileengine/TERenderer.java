@@ -1,5 +1,6 @@
 package tileengine;
 
+import core.HUD;
 import core.charecters.GameCharacter;
 import edu.princeton.cs.algs4.StdDraw;
 import utils.DS.RecordLike.Point;
@@ -91,11 +92,12 @@ public class TERenderer {
         StdDraw.show();
     }
 
-    public void renderFrame(TETile[][] world, Iterable<GameCharacter> characters, Point camera) {
+    public void renderFrame(TETile[][] world, Iterable<GameCharacter> characters, HUD hud, Point camera) {
         StdDraw.clear(new Color(0, 0, 0));
         drawTiles(world, false);
         drawCharacters(characters, camera.x, camera.y);
         drawTiles(world, true);
+        drawHUD(hud);
         StdDraw.show();
     }
 
@@ -132,6 +134,14 @@ public class TERenderer {
         for (GameCharacter c: characters) {
             c.draw(cameraX, cameraY);
         }
+    }
+
+    /**
+     * Draws the HUD
+     * @param hud is the HUD to draw
+     */
+    public void drawHUD(HUD hud) {
+        hud.draw();
     }
 
     /**

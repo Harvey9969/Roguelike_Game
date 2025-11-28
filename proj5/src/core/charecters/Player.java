@@ -5,8 +5,10 @@ import utils.DS.Grid;
 import utils.DS.RecordLike.Dir;
 
 public class Player extends Combatant {
+    public static final int MAX_HEALTH = 5;
+
     public Player(int x, int y, Grid grid, EntityManager manager) {
-        super(x, y, grid, "player", manager, 5, 1);
+        super(x, y, grid, "player", manager, MAX_HEALTH, 1);
     }
 
     @Override

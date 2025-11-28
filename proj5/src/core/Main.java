@@ -21,19 +21,21 @@ public class Main {
 
         WorldMap map = new WorldMap(977903862194668525L, WIDTH, HEIGHT);
         EntityManager manager = new EntityManager(map.graph, map.grid, new Random(977903862194668525L));
-
-        Player player = manager.player;
+        HUD hud = new HUD(VIEW_WIDTH, VIEW_HEIGHT, map.grid, manager.player);
 
         Frame frame = new Frame();
         while (true) {
             frame.startFrame();
 
+            Point camera = positionCamera(manager.player);
+
             while (StdDraw.hasNextKeyTyped()) {
-                player.respond(StdDraw.nextKeyTyped());
+                manager.player.respond(StdDraw.nextKeyTyped());
             }
+
+            hud.pollMouse(camera);
             manager.tickAll();
 
-            Point camera = positionCamera(player);
             ter.renderFrame(
                     map.grid.view(
                             camera,
@@ -41,6 +43,7 @@ public class Main {
                             VIEW_HEIGHT
                     ),
                     manager.charactersSet,
+                    hud,
                     camera
             );
 
