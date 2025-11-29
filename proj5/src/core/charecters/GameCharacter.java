@@ -2,9 +2,10 @@ package core.charecters;
 
 import core.charecters.animation.Action;
 import core.charecters.animation.State;
+import core.screens.GameScreen;
 import edu.princeton.cs.algs4.StdDraw;
 import utils.DS.Grid;
-import utils.DS.RecordLike.Dir;
+import utils.DS.recordlike.Dir;
 
 public abstract class GameCharacter {
     private static final int FRAME_DELAY = 10;

@@ -1,15 +1,15 @@
 package core.charecters;
 
-import core.EntityManager;
+import core.game.GameState;
 import utils.DS.Grid;
-import utils.DS.RecordLike.Dir;
+import utils.DS.recordlike.Dir;
 
 import java.util.Random;
 
 public class Slime extends Combatant{
     Random random;
 
-    public Slime(double x, double y, Grid grid, EntityManager manager, Random random) {
+    public Slime(double x, double y, Grid grid, GameState manager, Random random) {
         super(x, y, grid, "slime", manager, 2, 0);
         this.random = random;
     }

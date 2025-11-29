@@ -1,6 +1,6 @@
 package core.charecters.animation;
 
-import utils.DS.RecordLike.Dir;
+import utils.DS.recordlike.Dir;
 
 import java.io.File;
 import java.util.HashMap;

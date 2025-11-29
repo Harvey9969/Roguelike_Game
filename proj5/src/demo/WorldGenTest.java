@@ -1,7 +1,6 @@
 package demo;
 
-import core.WorldMap;
-import tileengine.TERenderer;
+import core.game.WorldMap;
 
 public class WorldGenTest {
 //    private static final int WIDTH = 50;

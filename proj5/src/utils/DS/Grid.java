@@ -2,9 +2,9 @@ package utils.DS;
 
 import tileengine.TETile;
 import tileengine.Tileset;
-import utils.DS.RecordLike.Dir;
-import utils.DS.RecordLike.Point;
-import utils.DS.RecordLike.Tile;
+import utils.DS.recordlike.Dir;
+import utils.DS.recordlike.Point;
+import utils.DS.recordlike.Tile;
 
 import java.util.*;
 

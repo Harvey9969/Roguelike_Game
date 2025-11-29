@@ -2,11 +2,12 @@ package tileengine;
 
 import java.awt.Color;
 
+import core.screens.GameScreen;
 import edu.princeton.cs.algs4.StdDraw;
 
 /**
  * The TETile object is used to represent a single tile in your world. A 2D array of tiles make up a
- * board, and can be drawn to the screen using the TERenderer class.
+ * board, and can be drawn to the screen using the GameScreen class.
  *
  * All TETile objects must have a character, textcolor, and background color to be used to represent
  * the tile when drawn to the screen. You can also optionally provide a path to an image file of an
@@ -51,7 +52,7 @@ public class TETile {
         this.backgroundColor = Color.BLACK;
         this.description = description;
         this.filepath = filepath;
-        this.collider = new Collider(0, TERenderer.TILE_SIZE - 1, 0, TERenderer.TILE_SIZE - 1);
+        this.collider = new Collider(0, GameScreen.TILE_SIZE - 1, 0, GameScreen.TILE_SIZE - 1);
         this.id = id;
     }
 
@@ -69,7 +70,7 @@ public class TETile {
         this.backgroundColor = backgroundColor;
         this.description = description;
         this.filepath = null;
-        this.collider = new Collider(0, TERenderer.TILE_SIZE - 1, 0, TERenderer.TILE_SIZE - 1);
+        this.collider = new Collider(0, GameScreen.TILE_SIZE - 1, 0, GameScreen.TILE_SIZE - 1);
         this.id = id;
     }
 

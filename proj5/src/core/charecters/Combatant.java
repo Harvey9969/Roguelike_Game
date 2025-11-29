@@ -1,11 +1,11 @@
 package core.charecters;
 
-import core.EntityManager;
 import core.charecters.animation.Action;
+import core.game.GameState;
 import tileengine.TETile;
 import tileengine.Tileset;
 import utils.DS.Grid;
-import utils.DS.RecordLike.Dir;
+import utils.DS.recordlike.Dir;
 
 public abstract class Combatant extends GameCharacter {
     private static final double D = .3;
@@ -75,12 +75,12 @@ public abstract class Combatant extends GameCharacter {
         }
     }
 
-    public EntityManager manager;
+    public GameState manager;
 
     public int health;
     public int damage;
 
-    public Combatant(double x, double y, Grid grid, String spriteFolder, EntityManager manager, int health, int damage) {
+    public Combatant(double x, double y, Grid grid, String spriteFolder, GameState manager, int health, int damage) {
         super(x, y, true, grid, spriteFolder);
 
         this.manager = manager;

@@ -1,5 +1,7 @@
 package tileengine;
 
+import core.screens.GameScreen;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -19,10 +21,10 @@ public class Collider {
             throw new IllegalArgumentException("Misplaced points don't form valid rectangle");
         }
 
-        double nMinX = minX / (TERenderer.TILE_SIZE - 1);
-        double nMaxX = maxX / (TERenderer.TILE_SIZE - 1);
-        double nMinY = minY / (TERenderer.TILE_SIZE - 1);
-        double nMaxY = maxY / (TERenderer.TILE_SIZE - 1);
+        double nMinX = minX / (GameScreen.TILE_SIZE - 1);
+        double nMaxX = maxX / (GameScreen.TILE_SIZE - 1);
+        double nMinY = minY / (GameScreen.TILE_SIZE - 1);
+        double nMaxY = maxY / (GameScreen.TILE_SIZE - 1);
 
         List<Double> checkList = List.of(nMinX, nMaxX, nMinY, nMaxY);
 
@@ -32,7 +34,7 @@ public class Collider {
         ) {
             throw new IllegalArgumentException(
                     "Cords must be between 0 and "
-                    + (TERenderer.TILE_SIZE - 1)
+                    + (GameScreen.TILE_SIZE - 1)
             );
         }
 

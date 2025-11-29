@@ -1,6 +1,6 @@
 package utils.DS;
 
-import utils.DS.RecordLike.Point;
+import utils.DS.recordlike.Point;
 
 import java.util.ArrayList;
 import java.util.Random;

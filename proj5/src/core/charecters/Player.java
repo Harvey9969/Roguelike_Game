@@ -1,13 +1,13 @@
 package core.charecters;
 
-import core.EntityManager;
+import core.game.GameState;
 import utils.DS.Grid;
-import utils.DS.RecordLike.Dir;
+import utils.DS.recordlike.Dir;
 
 public class Player extends Combatant {
     public static final int MAX_HEALTH = 5;
 
-    public Player(int x, int y, Grid grid, EntityManager manager) {
+    public Player(int x, int y, Grid grid, GameState manager) {
         super(x, y, grid, "player", manager, MAX_HEALTH, 1);
     }
 

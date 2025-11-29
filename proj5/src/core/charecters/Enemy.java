@@ -1,16 +1,16 @@
 package core.charecters;
 
-import core.EntityManager;
+import core.game.GameState;
 import utils.DS.Grid;
-import utils.DS.RecordLike.Dir;
-import utils.DS.RecordLike.Point;
+import utils.DS.recordlike.Dir;
+import utils.DS.recordlike.Point;
 
 import java.util.List;
 
 public class Enemy extends Combatant {
     Combatant target;
 
-    public Enemy(double x, double y, Grid grid, String spriteFolder, EntityManager manager, int health, int damage) {
+    public Enemy(double x, double y, Grid grid, String spriteFolder, GameState manager, int health, int damage) {
         super(x, y, grid, spriteFolder, manager, health, damage);
         target = manager.player;
     }
