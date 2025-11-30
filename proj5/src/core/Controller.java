@@ -43,6 +43,7 @@ public class Controller {
     private final Screen MENU;
     private final Screen SEED;
     private final Screen LOSE;
+    private final Screen WIN;
     // add other screens
 
     private boolean running;
@@ -54,6 +55,7 @@ public class Controller {
         MENU = new MenuScreen(this);
         SEED = new SeedScreen(this);
         LOSE = new LoseScreen(this);
+        WIN = new WinScreen(this);
 
         oldScreen = null;
         screen = MENU;
@@ -105,7 +107,7 @@ public class Controller {
     }
 
     public void startNewGame(long seed) {
-        GameState gameState = GameStateFactory.createNew(WORLD_WIDTH, WORLD_HEIGHT, seed);
+        GameState gameState = GameStateFactory.createNew(WORLD_WIDTH, WORLD_HEIGHT, seed, this);
 
         screen = new GameScreen(WORLD_WIDTH, WORLD_HEIGHT, this, gameState);
     }
@@ -116,7 +118,7 @@ public class Controller {
     }
 
     public void gotoWin() {
-        // moves to win screen
+        screen = WIN;
     }
 
     public void gotoLose() {

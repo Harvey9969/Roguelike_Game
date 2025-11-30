@@ -1,5 +1,6 @@
 package core.game;
 
+import core.Controller;
 import core.charecters.Combatant;
 import core.charecters.GameCharacter;
 import core.charecters.Player;
@@ -7,6 +8,8 @@ import core.charecters.princess.Conversation;
 import core.charecters.princess.DialogueContext;
 import core.charecters.princess.DialogueNode;
 import core.charecters.princess.Princess;
+import core.screens.GameScreen;
+import edu.princeton.cs.algs4.StdDraw;
 import utils.DS.Grid;
 import utils.DS.recordlike.Dir;
 import utils.DS.recordlike.Point;
@@ -27,8 +30,12 @@ public class GameState {
 
     public Conversation conversation;
 
-    public GameState(Grid grid) {
+    private boolean hasWon;
+    private final Controller controller;
+
+    public GameState(Grid grid, Controller controller) {
         this.grid = grid;
+        this.controller = controller;
 
         charactersSet = new HashSet<>();
         princessTiles = new HashSet<>();
@@ -74,6 +81,14 @@ public class GameState {
 
             c.animate();
         }
+
+        if (hasWon && !inConversation()) {
+            controller.gotoWin();
+        }
+    }
+
+    public void win() {
+        hasWon = true;
     }
 
     public Dir proximal(GameCharacter c1, GameCharacter c2) {
@@ -129,7 +144,7 @@ public class GameState {
     }
 
     public void startConversation(Princess princess, DialogueNode node, HUD hud) {
-        conversation = new Conversation(node, new DialogueContext(princess, this), hud);
+        conversation = new Conversation(node, new DialogueContext(princess, this, controller), hud);
     }
 
     public void handleConversation(char key) {

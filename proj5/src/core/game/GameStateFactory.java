@@ -1,9 +1,11 @@
 package core.game;
 
+import core.Controller;
 import core.charecters.*;
 import core.charecters.princess.DialogueChoices;
 import core.charecters.princess.DialogueNode;
 import core.charecters.princess.Princess;
+import edu.princeton.cs.algs4.StdDraw;
 import utils.DS.Grid;
 import utils.DS.PSet;
 import utils.DS.RoomGraph;
@@ -16,6 +18,89 @@ import utils.RandomUtils;
 import java.util.*;
 
 public class GameStateFactory {
+
+    // START OF LOADING MAPS
+
+    // END OF LOADING MAPS
+
+    // START OF DIALOGUE CREATION
+
+    private static final String prefix = "src/assets/";
+
+    private static final DialogueNode p101Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/sobbing.png",
+            prefix + "audio/p1/5.wav",
+            "please don't just leave me here",
+            List.of()
+    );
+
+    private static final DialogueNode p100Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/sniffle.png",
+            prefix + "audio/p1/4.wav",
+            "Are you going to take me with you",
+            List.of(
+                    new DialogueChoices("You'll just be extra baggage", p101Tree, null),
+                    new DialogueChoices("Like I said I'm here for Rem", p101Tree, null)
+            )
+    );
+
+    private static final DialogueNode p10Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/sniffle.png",
+            prefix + "audio/p1/1.wav",
+            "Really !?! But I'm her sister... Well this sword should help you save her",
+            List.of(
+                    new DialogueChoices("*Wordlessly take it*", p100Tree, ctx -> {ctx.gameState().player.damage++;}),
+                    new DialogueChoices("I appreciate your understanding", p100Tree, ctx -> {ctx.gameState().player.damage++;})
+            )
+    );
+
+    private static final DialogueNode p111Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/shy.png",
+            prefix + "audio/p1/6.wav",
+            "Will you be back ??",
+            List.of(
+                    new DialogueChoices("*Walk away without a word*", null, null),
+                    new DialogueChoices("I'll be back for you", null, null)
+            )
+    );
+
+    private static final DialogueNode p110Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/sniffle.png",
+            prefix + "audio/p1/3.wav",
+            "Don't leave yet!! Please take me with you",
+            List.of(
+                    new DialogueChoices("It safer for you to stay here, enemies can't enter these rooms", p111Tree, null)
+            )
+    );
+
+    private static final DialogueNode p11Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/give.png",
+            prefix + "audio/p1/2.wav",
+            "Sure",
+            List.of(
+                    new DialogueChoices("Thank you!", p110Tree, null)
+            )
+    );
+
+    private static final DialogueNode p1Tree = new DialogueNode(
+            "Ayaka",
+            prefix + "p1/beaming.png",
+            prefix + "audio/p1/0.wav",
+            "Are you here to save me?",
+            List.of(
+                    new DialogueChoices("No I'm here for Princess Rem", p10Tree, null),
+                    new DialogueChoices("Yes I am a knight duty bound to your father the king. The weapon you have will help me save your other sisters. Can I have it?", p11Tree, ctx -> {ctx.gameState().player.damage++;})
+            )
+    );
+
+    // END OF DIALOGUE CREATION
+
     private static record GG(Grid grid, RoomGraph graph, Random random) {};
 
     private static final int ROOM_MIN_DIM = 6;
@@ -23,15 +108,13 @@ public class GameStateFactory {
 
     private static final int CORRIDOR_PADDING = 10;
 
-    private static final String prefix = "src/assets/";
-
-    public static GameState createNew(int width, int height, long seed) {
+    public static GameState createNew(int width, int height, long seed, Controller controller) {
         GG world = worldGen(width, height, seed);
         Grid grid = world.grid;
         RoomGraph graph = world.graph;
         Random random = world.random;
 
-        GameState gameState = new GameState(grid);
+        GameState gameState = new GameState(grid, controller);
 
         graph.genDungeon(grid);
 
@@ -54,36 +137,6 @@ public class GameStateFactory {
         }
 
         gameState.addPlayer(new Player(startRoom.center.x, startRoom.center.y, grid, gameState));
-
-        DialogueNode p10Tree = new DialogueNode(
-                "Ayaka",
-                prefix + "p1/beaming.png",
-                prefix + "audio/p1/0.wav",
-                "I'm wearing it just for Colin",
-                List.of()
-        );
-
-        DialogueNode p11Tree = new DialogueNode(
-                "Ayaka",
-                prefix + "p1/give.png",
-                prefix + "audio/p1/1.wav",
-                "you can have it",
-                List.of()
-        );
-
-        DialogueNode p1Tree = new DialogueNode(
-                "Ayaka",
-                prefix + "p1/shy.png",
-                prefix + "audio/p1/2.wav",
-                "Bruh whats up, I'm Sierra. It little profits that an idle queen matched with an aged Colin I mete and dole unequal laws unto a savage... so, you want to get Taco Bell",
-                List.of(
-                        new DialogueChoices("Awfully formal dress for 3AL. I mean its unlikely but what would happen if something were to get on it. Why what might happen next feels so so gritty", p10Tree, null),
-                        new DialogueChoices("You have Colin but can I have a sword?", p11Tree,
-                                ctx -> {
-                            ctx.p().relPos = ctx.p().Actions.GIVE;
-                        })
-                )
-        );
 
         gameState.setP1(new Princess(p1Room.center.x, p1Room.center.y, grid, gameState, "p1", p1Tree));
 
