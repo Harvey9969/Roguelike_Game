@@ -18,7 +18,7 @@ public abstract class GameCharacter {
     public Actions Actions = new Actions();
     public class Actions {
         Idle IDLE;
-        Actions() {
+        public Actions() {
             IDLE = new Idle();
         }
 

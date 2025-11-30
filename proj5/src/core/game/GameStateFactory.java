@@ -1,6 +1,9 @@
 package core.game;
 
 import core.charecters.*;
+import core.charecters.princess.DialogueChoices;
+import core.charecters.princess.DialogueNode;
+import core.charecters.princess.Princess;
 import utils.DS.Grid;
 import utils.DS.PSet;
 import utils.DS.RoomGraph;
@@ -19,6 +22,8 @@ public class GameStateFactory {
     private static final int ROOM_MAX_DIM = 10;
 
     private static final int CORRIDOR_PADDING = 10;
+
+    private static final String prefix = "src/assets/";
 
     public static GameState createNew(int width, int height, long seed) {
         GG world = worldGen(width, height, seed);
@@ -49,7 +54,36 @@ public class GameStateFactory {
         }
 
         gameState.addPlayer(new Player(startRoom.center.x, startRoom.center.y, grid, gameState));
-        gameState.setP1(new Princess(p1Room.center.x, p1Room.center.y, grid, gameState, "p1"));
+
+        DialogueNode p10Tree = new DialogueNode(
+                "Ayaka",
+                prefix + "p1/beaming.png",
+                "I'm wearing it just for Colin",
+                List.of()
+        );
+
+        DialogueNode p11Tree = new DialogueNode(
+                "Ayaka",
+                prefix + "p1/give.png",
+                "you can have it",
+                List.of()
+        );
+
+        DialogueNode p1Tree = new DialogueNode(
+                "Ayaka",
+                prefix + "p1/shy.png",
+                "Bruh whats up, I'm Sierra. It little profits that an idle queen matched with an aged Colin I mete and dole unequal laws unto a savage... so, you want to get Taco Bell",
+                List.of(
+                        new DialogueChoices("Awfully formally dress for 3AL. I mean its unlikely but what would happen if something were to get on it. Why what might happen next feels so gritty", p10Tree, null),
+                        new DialogueChoices("You have Colin but can I have a sword?", p11Tree,
+                                ctx -> {
+                            ctx.p().relPos = ctx.p().Actions.GIVE;
+                            ctx.gameState().player.damage++;
+                        })
+                )
+        );
+
+        gameState.setP1(new Princess(p1Room.center.x, p1Room.center.y, grid, gameState, "p1", p1Tree));
 
         // enemy placement
         List<Room> beginning = new ArrayList<>();

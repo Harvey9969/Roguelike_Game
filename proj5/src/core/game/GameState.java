@@ -3,7 +3,10 @@ package core.game;
 import core.charecters.Combatant;
 import core.charecters.GameCharacter;
 import core.charecters.Player;
-import core.charecters.Princess;
+import core.charecters.princess.Conversation;
+import core.charecters.princess.DialogueContext;
+import core.charecters.princess.DialogueNode;
+import core.charecters.princess.Princess;
 import utils.DS.Grid;
 import utils.DS.recordlike.Dir;
 import utils.DS.recordlike.Point;
@@ -19,8 +22,10 @@ public class GameState {
     public Princess p2;
     public Princess p3;
 
-    public Set<GameCharacter> charactersSet;
-    private Set<Point> princessTiles;
+    public final Set<GameCharacter> charactersSet;
+    private final Set<Point> princessTiles;
+
+    public Conversation conversation;
 
     public GameState(Grid grid) {
         this.grid = grid;
@@ -115,5 +120,19 @@ public class GameState {
         }
 
         charactersSet.remove(character);
+    }
+
+    public boolean inConversation() {
+        return
+                conversation != null
+                && !conversation.isFinished();
+    }
+
+    public void startConversation(Princess princess, DialogueNode node, HUD hud) {
+        conversation = new Conversation(node, new DialogueContext(princess, this), hud);
+    }
+
+    public void handleConversation(char key) {
+        conversation.handle(key);
     }
 }

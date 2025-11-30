@@ -62,6 +62,9 @@ public class GameScreen implements Screen {
             gameState.player.y = gameState.p3.y;
         } else if (selectorKey && (key == 'q' || key == 'Q')) {
             System.exit(0);
+        } else if (gameState.inConversation()) {
+            gameState.handleConversation(key);
+            selectorKey = false;
         } else {
             gameState.player.respond(key);
             gameState.p1.respond(key);
@@ -82,6 +85,13 @@ public class GameScreen implements Screen {
             controller.gotoLose();
         } else if (gameState.player.health <= 0) {
             loseTicks++;
+        }
+
+        if (gameState.inConversation()) {
+            hud.setDialogue(gameState.conversation.node);
+            hud.setShowDialogue(true);
+        } else {
+            hud.setShowDialogue(false);
         }
     }
 
