@@ -32,12 +32,12 @@ public class Princess extends GameCharacter {
 
         class Cry extends Action {
             Cry() {
-                super("CRY");
+                super("CRY", true, true);
             }
 
             @Override
             public void onFinish() {
-                throw new UnsupportedOperationException();
+                return;
             }
         }
     }

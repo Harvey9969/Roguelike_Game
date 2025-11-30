@@ -1,6 +1,7 @@
 package core.game;
 
 import core.charecters.Player;
+import core.charecters.princess.AudioManager;
 import core.charecters.princess.DialogueChoices;
 import core.charecters.princess.DialogueNode;
 import edu.princeton.cs.algs4.StdDraw;
@@ -12,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class HUD {
+    private static final double X_DMG = 7;
+
     private static final double X_HEART_PADDING = 0.5;
     private static final double X_TEXT_PADDING = 3;
 
@@ -47,9 +50,15 @@ public class HUD {
     private boolean talkTip;
 
     private String speaker;
+
     private String picPath;
+    private String wavPath;
+
+    private String oldDialogueText;
     private String dialogueText;
     private List<String> dialogueChoices;
+
+    AudioManager audio;
 
     private boolean isChoices;
     private boolean showDialogue;
@@ -60,6 +69,9 @@ public class HUD {
         this.player = player;
         this.grid = grid;
 
+        audio = new AudioManager();
+
+        oldDialogueText = "";
         tileName = "";
     }
 
@@ -67,14 +79,28 @@ public class HUD {
         StdDraw.setPenColor(StdDraw.WHITE);
 
         drawPlayerHealth();
+        drawPlayerDMG();
         drawTileName();
 
         if (showDialogue) {
             drawDialogue();
-        } else if (talkTip) {
+
+            if (!oldDialogueText.equals(dialogueText)) {
+                audio.playAudio(wavPath);
+                oldDialogueText = dialogueText;
+            }
+        } else  {
+            audio.stopAudio();
+        }
+
+        if (talkTip) {
             StdDraw.setPenColor(StdDraw.WHITE);
             drawTip();
         }
+    }
+
+    public void drawPlayerDMG() {
+        StdDraw.textLeft(X_DMG, DISPLAY_HEIGHT - Y_PADDING, "DMG: " + player.damage);
     }
 
     public void pollMouse(Point mouse, Point camera) {
@@ -176,7 +202,9 @@ public class HUD {
     public void setDialogue(DialogueNode node) {
         speaker = node.speaker();
         dialogueText = node.text();
-        picPath = node.filepath();
+
+        picPath = node.imgpath();
+        wavPath = node.wavpath();
 
         dialogueChoices = new ArrayList<>();
         for (DialogueChoices choice : node.choices()) {

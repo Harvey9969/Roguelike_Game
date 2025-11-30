@@ -58,6 +58,7 @@ public class GameStateFactory {
         DialogueNode p10Tree = new DialogueNode(
                 "Ayaka",
                 prefix + "p1/beaming.png",
+                prefix + "audio/p1/0.wav",
                 "I'm wearing it just for Colin",
                 List.of()
         );
@@ -65,6 +66,7 @@ public class GameStateFactory {
         DialogueNode p11Tree = new DialogueNode(
                 "Ayaka",
                 prefix + "p1/give.png",
+                prefix + "audio/p1/1.wav",
                 "you can have it",
                 List.of()
         );
@@ -72,13 +74,13 @@ public class GameStateFactory {
         DialogueNode p1Tree = new DialogueNode(
                 "Ayaka",
                 prefix + "p1/shy.png",
+                prefix + "audio/p1/2.wav",
                 "Bruh whats up, I'm Sierra. It little profits that an idle queen matched with an aged Colin I mete and dole unequal laws unto a savage... so, you want to get Taco Bell",
                 List.of(
-                        new DialogueChoices("Awfully formally dress for 3AL. I mean its unlikely but what would happen if something were to get on it. Why what might happen next feels so gritty", p10Tree, null),
+                        new DialogueChoices("Awfully formal dress for 3AL. I mean its unlikely but what would happen if something were to get on it. Why what might happen next feels so so gritty", p10Tree, null),
                         new DialogueChoices("You have Colin but can I have a sword?", p11Tree,
                                 ctx -> {
                             ctx.p().relPos = ctx.p().Actions.GIVE;
-                            ctx.gameState().player.damage++;
                         })
                 )
         );
