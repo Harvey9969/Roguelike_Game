@@ -86,8 +86,14 @@ public class HUD {
             drawDialogue();
 
             if (!oldDialogueText.equals(dialogueText)) {
-                audio.playAudio(wavPath);
-                oldDialogueText = dialogueText;
+
+                if (wavPath != null) {
+                    audio.playAudio(wavPath);
+                    oldDialogueText = dialogueText;
+                } else {
+                    audio.stopAudio();
+                }
+
             }
         } else  {
             audio.stopAudio();

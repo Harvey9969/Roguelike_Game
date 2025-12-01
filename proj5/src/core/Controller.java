@@ -2,6 +2,8 @@ package core;
 
 import core.game.GameState;
 import core.game.GameStateFactory;
+import core.game.saving.SaveData;
+import core.game.saving.SaveFactory;
 import core.screens.*;
 import edu.princeton.cs.algs4.StdDraw;
 import utils.DS.recordlike.Point;
@@ -113,8 +115,10 @@ public class Controller {
     }
 
     public void loadGame() {
-        // somehow gets a GameState
-        // uses GameState to start GameScreen
+        SaveData save = SaveFactory.load();
+        GameState gameState = GameStateFactory.loadNew(save, this);
+
+        screen = new GameScreen(save.width(), save.height(), this, gameState);
     }
 
     public void gotoWin() {

@@ -8,11 +8,9 @@ import utils.DS.recordlike.Point;
 import java.util.List;
 
 public class Enemy extends Combatant {
-    Combatant target;
 
     public Enemy(double x, double y, Grid grid, String spriteFolder, GameState manager, int health, int damage) {
         super(x, y, grid, spriteFolder, manager, health, damage);
-        target = manager.player;
     }
 
     @Override
@@ -25,7 +23,7 @@ public class Enemy extends Combatant {
         Dir bestDir = Dir.BLANK;
         int bestDist = Integer.MAX_VALUE;
 
-        Dir attackDir = manager.proximal(this, target);
+        Dir attackDir = manager.proximal(this, manager.player);
         if (!attackDir.equals(Dir.BLANK)) {
             facing = attackDir;
             relPos = Actions.ATTACK;
@@ -57,7 +55,7 @@ public class Enemy extends Combatant {
     }
 
     private Point getTargetPos() {
-        return new Point(target.snapX(), target.snapY());
+        return new Point(manager.player.snapX(), manager.player.snapY());
     }
 
     @Override

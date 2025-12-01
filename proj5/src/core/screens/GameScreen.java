@@ -5,6 +5,7 @@ import core.charecters.GameCharacter;
 import core.charecters.Player;
 import core.game.GameState;
 import core.game.HUD;
+import core.game.saving.SaveFactory;
 import tileengine.TETile;
 import utils.DS.recordlike.Point;
 
@@ -45,6 +46,8 @@ public class GameScreen implements Screen {
         hud = new HUD(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES, gameState.grid, gameState.player);
 
         gameState.p1.setHud(hud);
+        // add p2
+        gameState.p3.setHud(hud);
     }
 
     @Override
@@ -61,6 +64,7 @@ public class GameScreen implements Screen {
             gameState.player.x = gameState.p3.x;
             gameState.player.y = gameState.p3.y;
         } else if (selectorKey && (key == 'q' || key == 'Q')) {
+            SaveFactory.save(gameState);
             System.exit(0);
         } else if (gameState.inConversation()) {
             gameState.handleConversation(key);
@@ -68,6 +72,8 @@ public class GameScreen implements Screen {
         } else {
             gameState.player.respond(key);
             gameState.p1.respond(key);
+            // add p2
+            gameState.p3.respond(key);
             selectorKey = false;
         }
     }

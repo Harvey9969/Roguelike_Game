@@ -8,8 +8,6 @@ import core.charecters.princess.Conversation;
 import core.charecters.princess.DialogueContext;
 import core.charecters.princess.DialogueNode;
 import core.charecters.princess.Princess;
-import core.screens.GameScreen;
-import edu.princeton.cs.algs4.StdDraw;
 import utils.DS.Grid;
 import utils.DS.recordlike.Dir;
 import utils.DS.recordlike.Point;
@@ -41,17 +39,17 @@ public class GameState {
         princessTiles = new HashSet<>();
     }
 
-    public void setP1 (Princess p) {
+    public void addP1(Princess p) {
         p1 = p;
         addCharacter(p);
     }
 
-    public void setP2 (Princess p) {
+    public void addP2 (Princess p) {
         p2 = p;
         addCharacter(p);
     }
 
-    public void setP3 (Princess p) {
+    public void addP3 (Princess p) {
         p3 = p;
         addCharacter(p);
     }

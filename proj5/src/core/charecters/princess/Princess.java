@@ -12,11 +12,9 @@ public class Princess extends GameCharacter {
     public Actions Actions = new Actions();
     public class Actions extends GameCharacter.Actions {
         public Give GIVE;
-        public Cry CRY;
 
         Actions() {
             GIVE = new Give();
-            CRY = new Cry();
         }
 
         class Give extends Action {
@@ -29,17 +27,6 @@ public class Princess extends GameCharacter {
                 gameState.player.damage++;
             }
         }
-
-        class Cry extends Action {
-            Cry() {
-                super("CRY", true, true);
-            }
-
-            @Override
-            public void onFinish() {
-                return;
-            }
-        }
     }
 
     private HUD hud;
@@ -48,12 +35,17 @@ public class Princess extends GameCharacter {
 
     private boolean proximal;
 
+    private boolean oldTip;
+    private boolean tip;
+
+    public int pID;
     public boolean spokenTo;
 
-    public Princess(double x, double y, Grid grid, GameState gameState, String spriteFolder, DialogueNode tree) {
+    public Princess(double x, double y, Grid grid, GameState gameState, String spriteFolder, int pID, DialogueNode tree) {
         super(x, y, false, grid, spriteFolder);
         this.gameState = gameState;
         this.tree = tree;
+        this.pID = pID;
     }
 
     public void setHud(HUD hud) {
@@ -72,9 +64,11 @@ public class Princess extends GameCharacter {
     @Override
     public void _act() {
         proximal = !gameState.proximal(gameState.player, this).equals(Dir.BLANK);
+        tip = !spokenTo && proximal && !gameState.inConversation();
 
-        if (!spokenTo) {
-            hud.setTalkTip(proximal && !gameState.inConversation());
+        if (tip != oldTip) {
+            hud.setTalkTip(tip);
+            oldTip = tip;
         }
     }
 }

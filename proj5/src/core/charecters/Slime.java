@@ -9,8 +9,8 @@ import java.util.Random;
 public class Slime extends Combatant{
     Random random;
 
-    public Slime(double x, double y, Grid grid, GameState manager, Random random) {
-        super(x, y, grid, "slime", manager, 2, 0);
+    public Slime(double x, double y, int health, Grid grid, GameState manager, Random random) {
+        super(x, y, grid, "slime", manager, health, 0);
         this.random = random;
     }
 

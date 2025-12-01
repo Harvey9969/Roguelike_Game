@@ -41,10 +41,13 @@ public abstract class GameCharacter {
     private int accruedTicks;
     private boolean locked;
 
+    public String spriteFolder;
+
     public GameCharacter(double x, double y, boolean directional, Grid grid, String spriteFolder) {
         this.x = x + 0.5;
         this.y = y + 0.5;
         this.grid = grid;
+        this.spriteFolder = spriteFolder;
         this.state = new State(spriteFolder);
 
         if (directional) {

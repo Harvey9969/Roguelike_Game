@@ -7,7 +7,7 @@ import utils.DS.recordlike.Dir;
 public class Player extends Combatant {
     public static final int MAX_HEALTH = 5;
 
-    public Player(int x, int y, Grid grid, GameState manager) {
+    public Player(int x, int y, int health, int damage, Grid grid, GameState manager) {
         super(x, y, grid, "player", manager, MAX_HEALTH, 1);
     }
 
