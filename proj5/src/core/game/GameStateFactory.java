@@ -35,7 +35,7 @@ public class GameStateFactory {
 
     private static final DialogueNode p10cTree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/sobbing.png",
+            prefix + "p1/5.png",
             prefix + "audio/p1/5.wav",
             "please don't just leave me here",
             List.of()
@@ -43,8 +43,8 @@ public class GameStateFactory {
 
     private static final DialogueNode p10bTree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/sniffle.png",
-            prefix + "audio/p1/4.wav",
+            prefix + "p1/3.png",
+            prefix + "audio/p1/3.wav",
             "Are you going to take me with you",
             List.of(
                     new DialogueChoices("You'll just be extra baggage", p10cTree, null),
@@ -54,18 +54,24 @@ public class GameStateFactory {
 
     private static final DialogueNode p10aTree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/sniffle.png",
+            prefix + "p1/1.png",
             prefix + "audio/p1/1.wav",
             "Really !?! But I'm her sister... Well this sword should help you save her",
             List.of(
-                    new DialogueChoices("*Wordlessly take it*", p10bTree, ctx -> {ctx.gameState().player.damage++;}),
-                    new DialogueChoices("I appreciate your understanding", p10bTree, ctx -> {ctx.gameState().player.damage++;})
+                    new DialogueChoices("*Wordlessly take it*", p10bTree, ctx -> {
+                        ctx.p().relPos = ctx.p().Actions.GIVE;
+                        ctx.gameState().player.damage++;
+                    }),
+                    new DialogueChoices("I appreciate your understanding", p10bTree, ctx -> {
+                        ctx.p().relPos = ctx.p().Actions.GIVE;
+                        ctx.gameState().player.damage++;
+                    })
             )
     );
 
     private static final DialogueNode p11cTree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/shy.png",
+            prefix + "p1/6.png",
             prefix + "audio/p1/6.wav",
             "Will you be back ??",
             List.of(
@@ -76,8 +82,8 @@ public class GameStateFactory {
 
     private static final DialogueNode p11bTree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/sniffle.png",
-            prefix + "audio/p1/3.wav",
+            prefix + "p1/4.png",
+            prefix + "audio/p1/4.wav",
             "Don't leave yet!! Please take me with you",
             List.of(
                     new DialogueChoices("It safer for you to stay here, enemies can't enter these rooms", p11cTree, null)
@@ -86,7 +92,7 @@ public class GameStateFactory {
 
     private static final DialogueNode p11aTree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/give.png",
+            prefix + "p1/2.png",
             prefix + "audio/p1/2.wav",
             "Sure",
             List.of(
@@ -96,16 +102,226 @@ public class GameStateFactory {
 
     private static final DialogueNode p1Tree = new DialogueNode(
             "Ayaka",
-            prefix + "p1/beaming.png",
+            prefix + "p1/0.png",
             prefix + "audio/p1/0.wav",
             "Are you here to save me?",
             List.of(
-                    new DialogueChoices("No I'm here for Princess Rem", p10aTree, null),
-                    new DialogueChoices("Yes I am a knight duty bound to your father the king. The weapon you have will help me save your other sisters. Can I have it?", p11aTree, ctx -> {ctx.gameState().player.damage++;})
+                    new DialogueChoices("No I'm here for Princess Rem", p10aTree,
+                            ctx -> {
+                                ctx.gameState().good = false;
+                            }
+                            ),
+                    new DialogueChoices("Yes I am a knight duty bound to your father the king. The weapon you have will help me save your other sisters. Can I have it?", p11aTree, ctx -> {
+                        ctx.p().relPos = ctx.p().Actions.GIVE;
+                        ctx.gameState().player.damage++;
+                        ctx.gameState().good = true;
+                    })
             )
     );
 
     // P2 DIALOGUE
+
+    private static final DialogueNode p20bremerge001Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/12.png",
+            prefix + "audio/p2/12.wav",
+            "May I go with you now? You're not just going to leave me behind... right?",
+            List.of(
+                    new DialogueChoices("*Walk away without a word*", null, null)
+            )
+    );
+
+    private static final DialogueNode p20bremerge0000Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/13.png",
+            prefix + "audio/p2/13.wav",
+            "I’ll find a way out -- and when I do, I’ll report everything about you.",
+            List.of(
+                    new DialogueChoices("* keep going *", null, null)
+            )
+    );
+
+    private static final DialogueNode p20bremerge0001Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/14.png",
+            prefix + "audio/p2/14.wav",
+            "...",
+            List.of()
+    );
+
+    private static final DialogueNode p20bremerge000Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/11.png",
+            prefix + "audio/p2/11.wav",
+            "I’m going to tell my father. You’ll regret even thinking you could get away with this.",
+            List.of(
+                    new DialogueChoices("Where are you going", p20bremerge0000Tree, null),
+                    new DialogueChoices("You'll never get out of this maze", p20bremerge0001Tree, null)
+            )
+    );
+
+    private static final DialogueNode p20bremerge00Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/10.png",
+            prefix + "audio/p2/10.wav",
+            "No, uhh- its not a sword but a decorative family heirloom so don’t you dare try to take it.",
+            List.of(
+                    new DialogueChoices("[take the sword]", p20bremerge000Tree, ctx -> { ctx.gameState().player.damage++; }),
+                    new DialogueChoices("[don't take the sword]", p20bremerge001Tree, null)
+            )
+    );
+
+    private static final DialogueNode p20bremerge01Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/9.png",
+            prefix + "audio/p2/9.wav",
+            "Please... don’t take it... It’s mine. Come on, just be reasonable, you know its not yours",
+            List.of(
+                    new DialogueChoices("[take the sword]", p20bremerge000Tree, ctx -> { ctx.gameState().player.damage++; }),
+                    new DialogueChoices("[don't take the sword]", p20bremerge001Tree, null)
+            )
+    );
+
+    private static final DialogueNode p20bremerge0Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/7.png",
+            prefix + "audio/p2/7.wav",
+            "No, that’s not allowed. Know your place, and don’t forget who’s giving the orders.",
+            List.of(
+                    new DialogueChoices("What is this -- is it a sword", p20bremerge00Tree, null),
+                    new DialogueChoices("Is this a sword", p20bremerge01Tree, null)
+            )
+    );
+
+    private static final DialogueNode p20bremerge1Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/8.png",
+            prefix + "audio/p2/8.wav",
+            "...",
+            List.of(
+                    new DialogueChoices("What is this -- is it a sword", p20bremerge00Tree, null),
+                    new DialogueChoices("Is this a sword", p20bremerge01Tree, null)
+            )
+    );
+
+    private static final DialogueNode p20aremergeTree = new DialogueNode(
+            "Makima",
+            prefix + "p2/5.png",
+            prefix + "audio/p2/5.wav",
+            "Be reasonable and save me. I have something for you if you do",
+            List.of(
+                    new DialogueChoices("You've piqued my interest -- I'll take that something", p20bremerge0Tree, null),
+                    new DialogueChoices("* push her back *", p20bremerge1Tree, null)
+            )
+    );
+
+
+    private static final DialogueNode p201Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/3.png",
+            prefix + "audio/p2/3.wav",
+            " Please... help me as well... I'm begging you",
+            List.of(
+                    new DialogueChoices("I'm only here for Rem -- nothing personal", p20aremergeTree, null)
+                    )
+    );
+    private static final DialogueNode p200Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/2.png",
+            prefix + "audio/p2/2.wav",
+            "What is that supposed to mean? I hardly understand, what you mean by that",
+            List.of(
+                    new DialogueChoices("My words were perfectly clear, if you don't understand that's on you", p20aremergeTree, null)
+            )
+    );
+
+    private static final DialogueNode p20Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/0.png",
+            prefix + "audio/p2/0.wav",
+            "I'm Princess Makima, daughter of the king and famed for my beauty. Don't lie, everyone knows me. Now come on, get me out of here.",
+            List.of(
+                    new DialogueChoices("I'm not going to save you", p200Tree, null),
+                    new DialogueChoices("So you are not Princess Rem then...", p201Tree, null)
+            )
+    );
+
+    private static final DialogueNode p21c1Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/16.png",
+            prefix + "audio/p2/16.wav",
+            "Then.. t-take me with you... If you want this weapon, you’ll have to take me too.",
+            List.of(
+                    new DialogueChoices("It's safer for you here, believe me. Stay here and I'll be back for you", null, null)
+            )
+    );
+
+    private static final DialogueNode p21c0Tree = new DialogueNode(
+            "Makima",
+            prefix + "p2/15.png",
+            prefix + "audio/p2/15.wav",
+            "Then give it back, you're not allowed to just take things",
+            List.of(
+                    new DialogueChoices("As you insist. Stay here and I'll be back for you", null, null)
+            )
+    );
+
+    private static final DialogueNode p21cTree = new DialogueNode(
+            "Makima",
+            prefix + "p2/6.png",
+            prefix + "audio/p2/6.wav",
+            "Here you go. Don't break it.",
+            List.of(
+                    new DialogueChoices("I think my weapon is better", p21c0Tree, null),
+                    new DialogueChoices("I like this new sword", p21c1Tree,
+                            ctx -> {
+                        ctx.gameState().player.damage++;
+                    })
+            )
+    );
+
+    private static final DialogueNode p21bTree = new DialogueNode(
+            "Makima",
+            prefix + "p2/4.png",
+            prefix + "audio/p2/4.wav",
+            "Well are you going to talk or just stay silent",
+            List.of(
+                    new DialogueChoices("The weapon you have with you can help me save your sisters... may I see it", p21cTree,
+                            ctx -> {
+                        ctx.p().relPos = ctx.p().Actions.GIVE;
+                    })
+            )
+    );
+
+    private static final DialogueNode p21aTree = new DialogueNode(
+            "Makima",
+            prefix + "p2/1.png",
+            prefix + "audio/p2/1.wav",
+            "Took you long enough. I haven't had dinner yet and I need to get ready for bed. Honestly, you should be grateful I'm still waiting",
+            List.of(
+                    new DialogueChoices("...", p21bTree, null)
+            )
+    );
+
+    private static final DialogueNode p2TreeGood = new DialogueNode(
+            "Makima",
+            prefix + "p2/0.png",
+            null,
+            "...",
+            List.of(
+                    new DialogueChoices("You must be the other princess", p21aTree, null)
+            )
+    );
+
+    private static final DialogueNode p2TreeBad = new DialogueNode(
+            "Makima",
+            prefix + "p2/0.png",
+            null,
+            "...",
+            List.of(
+                    new DialogueChoices("Who are you?", p20Tree, null)
+            )
+    );
 
     // P3 DIALOGUE
 
@@ -119,11 +335,11 @@ public class GameStateFactory {
 
     private static final DialogueNode p30111Tree = new DialogueNode(
             "Rem",
-            prefix + "p3/smiling.png",
+            prefix + "p3/food.png",
             prefix + "audio/p3/8.wav",
-            "How about we don't... we're not going anywhere",
+            "How about we don't... we're not going anywhere. We have all we need here",
             List.of(
-                    new DialogueChoices("You are making me worried", p3011remergeTree, ctx -> {ctx.gameState().win();})
+                    new DialogueChoices("What do you mean", p3011remergeTree, ctx -> {ctx.gameState().win();})
             )
     );
 
@@ -160,7 +376,7 @@ public class GameStateFactory {
     );
 
     private static final DialogueNode p301Tree = new DialogueNode(
-            "Bo-Lin Lai",
+            "...",
             prefix + "p3/worried.png",
             null,
             "Choose Rem's response",
@@ -174,7 +390,7 @@ public class GameStateFactory {
             "Rem",
             prefix + "p3/smiling.png",
             prefix + "audio/p3/4.wav",
-            "It’s fine! We don't need them, we don't need anything. We can stay here forever... isn’t that lovely?",
+            "It’s fine! We don't need them, we have everything we need here. We can stay here forever... isn’t that lovely?",
             List.of()
     );
 
@@ -209,7 +425,7 @@ public class GameStateFactory {
 
     private static final DialogueNode p31aTree = new DialogueNode(
             "Rem",
-            prefix + "p3/sniffle.png",
+            prefix + "p3/sniffling.png",
             prefix + "audio/p3/1.wav",
             "Are you here to save me? I’ve been so scared",
             List.of(
@@ -217,20 +433,46 @@ public class GameStateFactory {
             )
     );
 
-    private static final DialogueNode p3Tree = new DialogueNode(
+    private static final DialogueNode p3TreeGood = new DialogueNode(
             "Rem",
             prefix + "p3/shy.png",
             null,
             "...",
             List.of(
-                    new DialogueChoices("MY REM!!!", p30aTree, null),
                     new DialogueChoices("You must be the last princess", p31aTree, null)
             )
     );
 
-    private static final DialogueNode[] DIALOGUE_MAP = {p1Tree, null, p3Tree};
+    private static final DialogueNode p3TreeBad = new DialogueNode(
+            "Rem",
+            prefix + "p3/shy.png",
+            null,
+            "...",
+            List.of(
+                    new DialogueChoices("MY REM!!!", p30aTree, null)
+            )
+    );
 
     // END OF DIALOGUE CREATION
+
+    // SERVING DIALOGUE
+
+    public static DialogueNode getDialogue(int pID, boolean good) {
+        if (pID == 0) {
+            return p1Tree;
+        } else if (pID == 1 && good) {
+            return p2TreeGood;
+        } else if (pID == 1) {
+            return p2TreeBad;
+        } else if (pID == 2 && good) {
+            return p3TreeGood;
+        } else if (pID == 2) {
+            return p3TreeBad;
+        }
+
+        throw new IllegalArgumentException("Invalid pID");
+    }
+
 
     private static record GG(Grid grid, RoomGraph graph, Random random) {};
 
@@ -269,8 +511,9 @@ public class GameStateFactory {
 
         gameState.addPlayer(new Player(startRoom.center.x, startRoom.center.y, 5, 1, grid, gameState));
 
-        gameState.addP1(new Princess(p1Room.center.x, p1Room.center.y, grid, gameState, "p1", 0, p1Tree));
-        gameState.addP3(new Princess(p3Room.center.x, p3Room.center.y, grid, gameState, "p3", 2, p3Tree));
+        gameState.addP1(new Princess(p1Room.center.x, p1Room.center.y, grid, gameState, "p1", 0));
+        gameState.addP2(new Princess(p2Room.center.x, p2Room.center.y, grid, gameState, "p2", 1));
+        gameState.addP3(new Princess(p3Room.center.x, p3Room.center.y, grid, gameState, "p3", 2));
 
         // enemy placement
         List<Room> beginning = new ArrayList<>();
@@ -344,15 +587,32 @@ public class GameStateFactory {
                         grid,
                         gameState
                 ));
-            } else if (cData.type().equals("PRINCESS")) {
+            } else if (cData.type().equals("PRINCESS") && cData.pNum() == 0) {
                 gameState.addP1(new Princess(
                         cData.x(),
                         cData.y(),
                         grid,
                         gameState,
                         cData.spritePath(),
-                        cData.pNum(),
-                        DIALOGUE_MAP[cData.pNum()]
+                        0
+                ));
+            } else if (cData.type().equals("PRINCESS") && cData.pNum() == 1) {
+                gameState.addP2(new Princess(
+                        cData.x(),
+                        cData.y(),
+                        grid,
+                        gameState,
+                        cData.spritePath(),
+                        1
+                ));
+            } else if (cData.type().equals("PRINCESS") && cData.pNum() == 2) {
+                gameState.addP3(new Princess(
+                        cData.x(),
+                        cData.y(),
+                        grid,
+                        gameState,
+                        cData.spritePath(),
+                        2
                 ));
             } else if (cData.type().equals("SLIME")) {
                 gameState.addCharacter(new Slime(
@@ -375,6 +635,9 @@ public class GameStateFactory {
                 ));
             }
         }
+
+        // set choice
+        gameState.good = save.playerChoice();
 
         return gameState;
     }

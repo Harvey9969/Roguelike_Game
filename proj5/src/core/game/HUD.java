@@ -166,7 +166,7 @@ public class HUD {
         StdDraw.setFont(SPOKEN_FONT);
 
         textY -= SPOKEN_SPACE;
-        textY = drawText(textX, textY, dialogueText, 104) - OPTION_SPACE;
+        textY = drawText(textX, textY, dialogueText, 100) - OPTION_SPACE;
 
         textX += SPOKEN_INDENT;
 

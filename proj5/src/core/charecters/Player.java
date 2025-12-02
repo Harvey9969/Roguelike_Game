@@ -8,7 +8,7 @@ public class Player extends Combatant {
     public static final int MAX_HEALTH = 5;
 
     public Player(int x, int y, int health, int damage, Grid grid, GameState manager) {
-        super(x, y, grid, "player", manager, MAX_HEALTH, 1);
+        super(x, y, grid, "player", manager, health, damage);
     }
 
     @Override

@@ -23,6 +23,8 @@ public class GameState {
     public Princess p2;
     public Princess p3;
 
+    public boolean good;
+
     public final Set<GameCharacter> charactersSet;
     private final Set<Point> princessTiles;
 

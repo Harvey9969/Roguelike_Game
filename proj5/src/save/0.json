@@ -22803,130 +22803,15 @@
       "nothing"
     ]
   ],
+  "playerChoice": true,
   "characterData": [
     {
       "type": "ENEMY",
-      "x": 114,
-      "y": 82,
-      "spritePath": "alien",
-      "health": 5,
-      "damage": 2,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "PRINCESS",
-      "x": 112,
-      "y": 7,
-      "spritePath": "p3",
-      "health": 2147483647,
-      "damage": 2147483647,
-      "pNum": 2,
-      "spokenTo": true
-    },
-    {
-      "type": "ENEMY",
-      "x": 72,
-      "y": 67,
+      "x": 69,
+      "y": 83,
       "spritePath": "skeleton",
       "health": 3,
       "damage": 1,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "SLIME",
-      "x": 13,
-      "y": 65,
-      "health": 2,
-      "damage": 2147483647,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "SLIME",
-      "x": 27,
-      "y": 86,
-      "health": 2,
-      "damage": 2147483647,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "ENEMY",
-      "x": 18,
-      "y": 7,
-      "spritePath": "skeleton",
-      "health": 3,
-      "damage": 1,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "SLIME",
-      "x": 41,
-      "y": 95,
-      "health": 2,
-      "damage": 2147483647,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "ENEMY",
-      "x": 68,
-      "y": 37,
-      "spritePath": "skeleton",
-      "health": 3,
-      "damage": 1,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "ENEMY",
-      "x": 112,
-      "y": 114,
-      "spritePath": "alien",
-      "health": 5,
-      "damage": 2,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "PLAYER",
-      "x": 112,
-      "y": 6,
-      "health": 5,
-      "damage": 1,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "ENEMY",
-      "x": 131,
-      "y": 68,
-      "spritePath": "alien",
-      "health": 5,
-      "damage": 2,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "ENEMY",
-      "x": 118,
-      "y": 52,
-      "spritePath": "alien",
-      "health": 5,
-      "damage": 2,
-      "pNum": 2147483647,
-      "spokenTo": false
-    },
-    {
-      "type": "ENEMY",
-      "x": 143,
-      "y": 35,
-      "spritePath": "alien",
-      "health": 5,
-      "damage": 2,
       "pNum": 2147483647,
       "spokenTo": false
     },
@@ -22941,19 +22826,28 @@
       "spokenTo": false
     },
     {
+      "type": "PLAYER",
+      "x": 52,
+      "y": 83,
+      "health": 1,
+      "damage": 2,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
       "type": "ENEMY",
-      "x": 60,
-      "y": 16,
-      "spritePath": "skeleton",
-      "health": 3,
-      "damage": 1,
+      "x": 100,
+      "y": 135,
+      "spritePath": "alien",
+      "health": 5,
+      "damage": 2,
       "pNum": 2147483647,
       "spokenTo": false
     },
     {
       "type": "SLIME",
-      "x": 22,
-      "y": 105,
+      "x": 60,
+      "y": 144,
       "health": 2,
       "damage": 2147483647,
       "pNum": 2147483647,
@@ -22961,8 +22855,8 @@
     },
     {
       "type": "ENEMY",
-      "x": 46,
-      "y": 11,
+      "x": 40,
+      "y": 12,
       "spritePath": "skeleton",
       "health": 3,
       "damage": 1,
@@ -22971,11 +22865,50 @@
     },
     {
       "type": "ENEMY",
-      "x": 45,
-      "y": 49,
-      "spritePath": "skeleton",
-      "health": 3,
-      "damage": 1,
+      "x": 122,
+      "y": 28,
+      "spritePath": "alien",
+      "health": 5,
+      "damage": 2,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "PRINCESS",
+      "x": 112,
+      "y": 7,
+      "spritePath": "p3",
+      "health": 2147483647,
+      "damage": 2147483647,
+      "pNum": 2,
+      "spokenTo": false
+    },
+    {
+      "type": "ENEMY",
+      "x": 119,
+      "y": 63,
+      "spritePath": "alien",
+      "health": 5,
+      "damage": 2,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "ENEMY",
+      "x": 140,
+      "y": 89,
+      "spritePath": "alien",
+      "health": 5,
+      "damage": 2,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "SLIME",
+      "x": 11,
+      "y": 66,
+      "health": 2,
+      "damage": 2147483647,
       "pNum": 2147483647,
       "spokenTo": false
     },
@@ -22991,10 +22924,78 @@
     },
     {
       "type": "SLIME",
-      "x": 48,
-      "y": 120,
+      "x": 6,
+      "y": 91,
       "health": 2,
       "damage": 2147483647,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "ENEMY",
+      "x": 135,
+      "y": 113,
+      "spritePath": "alien",
+      "health": 5,
+      "damage": 2,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "SLIME",
+      "x": 13,
+      "y": 121,
+      "health": 2,
+      "damage": 2147483647,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "ENEMY",
+      "x": 18,
+      "y": 9,
+      "spritePath": "skeleton",
+      "health": 3,
+      "damage": 1,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "SLIME",
+      "x": 16,
+      "y": 146,
+      "health": 2,
+      "damage": 2147483647,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "PRINCESS",
+      "x": 104,
+      "y": 70,
+      "spritePath": "p2",
+      "health": 2147483647,
+      "damage": 2147483647,
+      "pNum": 1,
+      "spokenTo": false
+    },
+    {
+      "type": "ENEMY",
+      "x": 30,
+      "y": 39,
+      "spritePath": "skeleton",
+      "health": 3,
+      "damage": 1,
+      "pNum": 2147483647,
+      "spokenTo": false
+    },
+    {
+      "type": "ENEMY",
+      "x": 83,
+      "y": 84,
+      "spritePath": "skeleton",
+      "health": 3,
+      "damage": 1,
       "pNum": 2147483647,
       "spokenTo": false
     }

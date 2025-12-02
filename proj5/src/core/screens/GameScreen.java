@@ -46,7 +46,7 @@ public class GameScreen implements Screen {
         hud = new HUD(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES, gameState.grid, gameState.player);
 
         gameState.p1.setHud(hud);
-        // add p2
+        gameState.p2.setHud(hud);
         gameState.p3.setHud(hud);
     }
 
@@ -57,12 +57,15 @@ public class GameScreen implements Screen {
         } else if (selectorKey && (key == '1')) {
             gameState.player.x = gameState.p1.x;
             gameState.player.y = gameState.p1.y;
+            selectorKey = false;
         } else if (selectorKey && (key == '2')) {
             gameState.player.x = gameState.p2.x;
             gameState.player.y = gameState.p2.y;
+            selectorKey = false;
         } else if (selectorKey && (key == '3')) {
             gameState.player.x = gameState.p3.x;
             gameState.player.y = gameState.p3.y;
+            selectorKey = false;
         } else if (selectorKey && (key == 'q' || key == 'Q')) {
             SaveFactory.save(gameState);
             System.exit(0);
@@ -72,7 +75,7 @@ public class GameScreen implements Screen {
         } else {
             gameState.player.respond(key);
             gameState.p1.respond(key);
-            // add p2
+            gameState.p2.respond(key);
             gameState.p3.respond(key);
             selectorKey = false;
         }

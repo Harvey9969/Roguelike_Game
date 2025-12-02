@@ -3,6 +3,7 @@ package core.charecters.princess;
 import core.charecters.GameCharacter;
 import core.charecters.animation.Action;
 import core.game.GameState;
+import core.game.GameStateFactory;
 import core.game.HUD;
 import utils.DS.Grid;
 import utils.DS.recordlike.Dir;
@@ -24,14 +25,13 @@ public class Princess extends GameCharacter {
 
             @Override
             public void onFinish() {
-                gameState.player.damage++;
+                return;
             }
         }
     }
 
     private HUD hud;
     private GameState gameState;
-    private DialogueNode tree;
 
     private boolean proximal;
 
@@ -41,10 +41,9 @@ public class Princess extends GameCharacter {
     public int pID;
     public boolean spokenTo;
 
-    public Princess(double x, double y, Grid grid, GameState gameState, String spriteFolder, int pID, DialogueNode tree) {
+    public Princess(double x, double y, Grid grid, GameState gameState, String spriteFolder, int pID) {
         super(x, y, false, grid, spriteFolder);
         this.gameState = gameState;
-        this.tree = tree;
         this.pID = pID;
     }
 
@@ -55,7 +54,11 @@ public class Princess extends GameCharacter {
     @Override
     public void _respond(char key) {
         if (proximal && !spokenTo && key == 'i') {
-            gameState.startConversation(this, tree, hud);
+            gameState.startConversation(
+                    this,
+                    getDialogue(),
+                    hud
+            );
             spokenTo = true;
             hud.setTalkTip(false);
         }
@@ -70,5 +73,9 @@ public class Princess extends GameCharacter {
             hud.setTalkTip(tip);
             oldTip = tip;
         }
+    }
+
+    private DialogueNode getDialogue() {
+        return GameStateFactory.getDialogue(pID, gameState.good);
     }
 }

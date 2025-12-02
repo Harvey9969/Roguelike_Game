@@ -95,6 +95,7 @@ public class SaveFactory {
                         WIDTH,
                         HEIGHT,
                         gridRepr,
+                        gameState.good,
                         characterData,
                         princessTiles
                 )
